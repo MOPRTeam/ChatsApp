@@ -5,24 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F9F9F9"
-    tools:context=".PhoneNumberActivity">
+    tools:context=".SetupProfileActivity">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mobile_auth" />
+        android:src="@drawable/avatar" />
 
     <TextView
         android:id="@+id/phoneLbl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Verify your phone number"
+        android:text="Profile Info"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="ChatsApp will send an SMS message to verify your phone number."
+        android:text="Please set your name and an optional profile image."
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/phoneLbl"
         app:layout_constraintStart_toStartOf="@+id/phoneLbl"
@@ -60,14 +60,13 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/phoneBox"
+                android:id="@+id/nameBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textbox_outline"
                 android:ems="10"
-                android:hint="Type your phone number"
-                android:padding="10dp"
-                android:phoneNumber="true" />
+                android:hint="Type your name"
+                android:padding="10dp" />
 
             <Button
                 android:id="@+id/continueBtn"
@@ -75,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:backgroundTint="#4CAF50"
-                android:text="Continue" />
+                android:text="Setup Profile" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

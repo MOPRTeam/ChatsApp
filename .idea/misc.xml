@@ -3,10 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/ic_call.xml" value="0.2375" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/ic_chats.xml" value="0.2375" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/ic_search.xml" value="0.2375" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/ic_status.xml" value="0.2375" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/textbox_outline.xml" value="0.2375" />
-        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_otpactivity.xml" value="0.264" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_phone_number.xml" value="0.264" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_setup_profile.xml" value="0.25" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/row_conversation.xml" value="0.4" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/menu/menu.xml" value="0.25" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/menu/topmenu.xml" value="0.264" />
       </map>
     </option>
   </component>
