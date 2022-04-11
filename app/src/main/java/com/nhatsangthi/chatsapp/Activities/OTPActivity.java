@@ -1,12 +1,13 @@
-package com.nhatsangthi.chatsapp;
+package com.nhatsangthi.chatsapp.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ProgressBar;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +24,7 @@ import com.nhatsangthi.chatsapp.databinding.ActivityOtpactivityBinding;
 import java.util.concurrent.TimeUnit;
 
 public class OTPActivity extends AppCompatActivity {
+
     ActivityOtpactivityBinding binding;
     FirebaseAuth auth;
 
@@ -70,6 +72,10 @@ public class OTPActivity extends AppCompatActivity {
 
                         dialog.dismiss();
                         verificationId = verifyId;
+
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        binding.otpView.requestFocus();
                     }
                 }).build();
 

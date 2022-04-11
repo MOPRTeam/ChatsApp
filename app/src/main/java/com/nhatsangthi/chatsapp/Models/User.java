@@ -1,6 +1,7 @@
-package com.nhatsangthi.chatsapp;
+package com.nhatsangthi.chatsapp.Models;
 
 public class User {
+
     private String uid, name, phoneNumber, profileImage;
 
     public User() {

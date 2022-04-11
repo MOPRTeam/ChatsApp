@@ -1,4 +1,4 @@
-package com.nhatsangthi.chatsapp;
+package com.nhatsangthi.chatsapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.nhatsangthi.chatsapp.databinding.ActivityPhoneNumberBinding;
 
 public class PhoneNumberActivity extends AppCompatActivity {
+
     ActivityPhoneNumberBinding binding;
     FirebaseAuth auth;
 
