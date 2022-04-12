@@ -49,8 +49,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
-    implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
-    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0-beta05'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 

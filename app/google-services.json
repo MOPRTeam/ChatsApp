@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "729071821825",
-    "firebase_url": "https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    "firebase_url": "https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "chatsapp-a2966",
     "storage_bucket": "chatsapp-a2966.appspot.com"
   },
@@ -14,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "729071821825-pio9rnpi7jlte5vkln9cpl60j8c9q2e2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nhatsangthi.chatsapp",
+            "certificate_hash": "b34b4fc0c421e77ebaaa8389379360f392c7dc2c"
+          }
+        },
         {
           "client_id": "729071821825-5d3p2i6o0o2rs1mut5p7qtebiqae6r7v.apps.googleusercontent.com",
           "client_type": 3
