@@ -18,6 +18,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -213,8 +216,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        String currentId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currentId).setValue("Online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        String currentId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currentId).setValue("Offline");
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.group:
+                startActivity(new Intent(MainActivity.this, GroupChatActivity.class));
+                break;
             case R.id.search:
                 Toast.makeText(this, "Search clicked.", Toast.LENGTH_SHORT).show();
                 break;
