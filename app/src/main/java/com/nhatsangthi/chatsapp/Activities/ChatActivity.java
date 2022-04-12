@@ -193,32 +193,32 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        final Handler handler = new Handler();
-        binding.messageBox.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                database.getReference().child("presence").child(senderUid).setValue("Typing...");
-                handler.removeCallbacks(null);
-                handler.postDelayed(userStopTyping, 1000);
-            }
-
-            Runnable userStopTyping = new Runnable() {
-                @Override
-                public void run() {
-                    database.getReference().child("presence").child(senderUid).setValue("Online");
-                }
-            };
-        });
+//        final Handler handler = new Handler();
+//        binding.messageBox.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                database.getReference().child("presence").child(senderUid).setValue("Typing...");
+//                handler.removeCallbacks(null);
+//                handler.postDelayed(userStopTyping, 1000);
+//            }
+//
+//            Runnable userStopTyping = new Runnable() {
+//                @Override
+//                public void run() {
+//                    database.getReference().child("presence").child(senderUid).setValue("Online");
+//                }
+//            };
+//        });
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
