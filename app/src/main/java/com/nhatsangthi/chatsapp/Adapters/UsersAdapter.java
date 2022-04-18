@@ -50,7 +50,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
 
         String senderRoom = senderId + user.getUid();
 
-        FirebaseDatabase.getInstance("https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/")
+        FirebaseDatabase.getInstance()
                 .getReference()
                 .child("chats")
                 .child(senderRoom)

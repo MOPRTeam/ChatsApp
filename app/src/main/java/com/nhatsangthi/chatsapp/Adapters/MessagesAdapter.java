@@ -80,6 +80,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 .build();
 
         ReactionPopup popup = new ReactionPopup(context, config, (pos) -> {
+            if (pos < 0) {
+                return true;
+            }
+
             if (holder.getClass() == SentViewHolder.class) {
                 SentViewHolder viewHolder = (SentViewHolder) holder;
                 viewHolder.binding.feeling.setImageResource(reactions[pos]);
@@ -92,14 +96,14 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
             message.setFeeling(pos);
 
-            FirebaseDatabase.getInstance("https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/")
+            FirebaseDatabase.getInstance()
                     .getReference()
                     .child("chats")
                     .child(senderRoom)
                     .child("messages")
                     .child(message.getMessageId()).setValue(message);
 
-            FirebaseDatabase.getInstance("https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/")
+            FirebaseDatabase.getInstance()
                     .getReference()
                     .child("chats")
                     .child(receiverRoom)

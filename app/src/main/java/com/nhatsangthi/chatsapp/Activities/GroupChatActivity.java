@@ -1,19 +1,27 @@
 package com.nhatsangthi.chatsapp.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.nhatsangthi.chatsapp.Adapters.GroupMessagesAdapter;
 import com.nhatsangthi.chatsapp.Adapters.MessagesAdapter;
 import com.nhatsangthi.chatsapp.Models.Message;
@@ -21,7 +29,9 @@ import com.nhatsangthi.chatsapp.R;
 import com.nhatsangthi.chatsapp.databinding.ActivityGroupChatBinding;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class GroupChatActivity extends AppCompatActivity {
 
@@ -47,7 +57,7 @@ public class GroupChatActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         senderUid = FirebaseAuth.getInstance().getUid();
-        database = FirebaseDatabase.getInstance("https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
         dialog = new ProgressDialog(this);
@@ -93,6 +103,58 @@ public class GroupChatActivity extends AppCompatActivity {
                         .setValue(message);
             }
         });
+
+        binding.attachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, 25);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 25) {
+            if (data != null) {
+                if (data.getData() != null) {
+                    Uri selectedImage = data.getData();
+                    Calendar calendar = Calendar.getInstance();
+                    StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
+                    dialog.show();
+                    reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            dialog.dismiss();
+                            if (task.isSuccessful()) {
+                                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String filePath = uri.toString();
+
+                                        String messageTxt = binding.messageBox.getText().toString();
+
+                                        Date date = new Date();
+                                        Message message = new Message(messageTxt, senderUid, date.getTime());
+                                        message.setMessage("photo");
+                                        message.setImageUrl(filePath);
+                                        binding.messageBox.setText("");
+
+                                        database.getReference().child("public")
+                                                .push()
+                                                .setValue(message);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }
     }
 
     @Override

@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.setMessage("Uploading Image...");
         dialog.setCancelable(false);
 
-        database = FirebaseDatabase.getInstance("https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        database = FirebaseDatabase.getInstance();
         users = new ArrayList<>();
         userStatuses = new ArrayList<>();
 

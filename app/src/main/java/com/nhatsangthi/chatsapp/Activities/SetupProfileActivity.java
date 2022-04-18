@@ -40,7 +40,7 @@ public class SetupProfileActivity extends AppCompatActivity {
         dialog.setMessage("Updating profile...");
         dialog.setCancelable(false);
 
-        database = FirebaseDatabase.getInstance("https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         auth = FirebaseAuth.getInstance();
 

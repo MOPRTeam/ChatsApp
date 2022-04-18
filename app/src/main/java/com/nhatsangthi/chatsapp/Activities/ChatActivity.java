@@ -61,7 +61,7 @@ public class ChatActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        database = FirebaseDatabase.getInstance("https://chatsapp-a2966-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
         dialog = new ProgressDialog(this);
@@ -190,32 +190,32 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-//        final Handler handler = new Handler();
-//        binding.messageBox.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                database.getReference().child("presence").child(senderUid).setValue("Typing...");
-//                handler.removeCallbacks(null);
-//                handler.postDelayed(userStopTyping, 1000);
-//            }
-//
-//            Runnable userStopTyping = new Runnable() {
-//                @Override
-//                public void run() {
-//                    database.getReference().child("presence").child(senderUid).setValue("Online");
-//                }
-//            };
-//        });
+        final Handler handler = new Handler();
+        binding.messageBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                database.getReference().child("presence").child(senderUid).setValue("Typing...");
+                handler.removeCallbacks(null);
+                handler.postDelayed(userStopTyping, 1000);
+            }
+
+            Runnable userStopTyping = new Runnable() {
+                @Override
+                public void run() {
+                    database.getReference().child("presence").child(senderUid).setValue("Online");
+                }
+            };
+        });
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
