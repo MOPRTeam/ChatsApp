@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "729071821825-72sp1p4dr1698vume45nib2hvoi3ivj9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nhatsangthi.chatsapp",
+            "certificate_hash": "ee9b58b28df6071a5e744f0c8d75fa0f8935eea8"
+          }
+        },
+        {
           "client_id": "729071821825-pio9rnpi7jlte5vkln9cpl60j8c9q2e2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
