@@ -61,7 +61,8 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
                         .setStoryDuration(5000) // Default is 2000 Millis (2 Seconds)
                         .setTitleText(userStatus.getName()) // Default is Hidden
                         .setSubtitleText("") // Default is Hidden
-                        .setTitleLogoUrl(userStatus.getProfileImage()) // Default is Hidden
+                        .setTitleLogoUrl(userStatus.getProfileImage().equals("No Image") ?
+                                "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" : userStatus.getProfileImage()) // Default is Hidden
                         .setStoryClickListeners(new StoryClickListeners() {
                             @Override
                             public void onDescriptionClickListener(int position) {

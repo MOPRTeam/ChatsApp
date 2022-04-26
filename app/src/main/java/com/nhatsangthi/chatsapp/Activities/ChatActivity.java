@@ -248,6 +248,16 @@ public class ChatActivity extends AppCompatActivity {
             };
         });
 
+        binding.info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChatActivity.this, PersonalChatDetail.class);
+                intent.putExtra("name", name);
+                intent.putExtra("image", profile);
+                startActivity(intent);
+            }
+        });
+
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 //        getSupportActionBar().setTitle(name);
