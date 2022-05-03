@@ -256,26 +256,6 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
                     binding.everyone.setVisibility(View.GONE);
 
-                    binding.everyone.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            message.setMessage("This message is removed.");
-                            message.setFeeling(-1);
-                            FirebaseDatabase.getInstance().getReference()
-                                    .child("chats")
-                                    .child(senderRoom)
-                                    .child("messages")
-                                    .child(message.getMessageId()).setValue(message);
-
-                            FirebaseDatabase.getInstance().getReference()
-                                    .child("chats")
-                                    .child(receiverRoom)
-                                    .child("messages")
-                                    .child(message.getMessageId()).setValue(message);
-                            dialog.dismiss();
-                        }
-                    });
-
                     binding.delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

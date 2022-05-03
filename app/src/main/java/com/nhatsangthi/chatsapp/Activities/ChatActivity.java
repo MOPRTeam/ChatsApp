@@ -5,11 +5,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -42,6 +45,9 @@ import com.nhatsangthi.chatsapp.databinding.ActivityChatBinding;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,6 +69,9 @@ public class ChatActivity extends AppCompatActivity {
     ProgressDialog dialog;
     String senderUid, receiverUid;
     User currentUser = new User();
+
+    private static final int REQUEST_GET_CONTENT = 25;
+    private static final int REQUEST_IMAGE_CAPTURE = 111;
 
 
     @Override
@@ -139,6 +148,7 @@ public class ChatActivity extends AppCompatActivity {
                 .child(senderRoom)
                 .child("messages")
                 .addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         messages.clear();
@@ -148,8 +158,9 @@ public class ChatActivity extends AppCompatActivity {
                             messages.add(message);
                         }
 
+                        adapter = new MessagesAdapter(ChatActivity.this, messages, senderRoom, receiverRoom);
                         adapter.notifyDataSetChanged();
-                        binding.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+//                        binding.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                     }
 
                     @Override
@@ -217,7 +228,15 @@ public class ChatActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-                startActivityForResult(intent, 25);
+                startActivityForResult(intent, REQUEST_GET_CONTENT);
+            }
+        });
+
+        binding.camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         });
 
@@ -312,7 +331,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 25) {
+        if (requestCode == REQUEST_GET_CONTENT) {
             if (data != null) {
                 if (data.getData() != null) {
                     Uri selectedImage = data.getData();
@@ -371,6 +390,69 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (data != null) {
+                Bitmap bmp = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                bmp.recycle();
+
+                Calendar calendar = Calendar.getInstance();
+                StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
+                dialog.show();
+                reference.putBytes(byteArray).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        dialog.dismiss();
+                        if (task.isSuccessful()) {
+                            reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String filePath = uri.toString();
+
+                                    String messageTxt = binding.messageBox.getText().toString();
+
+                                    Date date = new Date();
+                                    Message message = new Message(messageTxt, senderUid, date.getTime());
+                                    message.setMessage("photo");
+                                    message.setImageUrl(filePath);
+                                    binding.messageBox.setText("");
+
+                                    String randomKey = database.getReference().push().getKey();
+
+                                    HashMap<String, Object> lastMsgObj = new HashMap<>();
+                                    lastMsgObj.put("lastMsg", message.getMessage());
+                                    lastMsgObj.put("lastMsgTime", date.getTime());
+
+                                    database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
+                                    database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
+
+                                    database.getReference().child("chats")
+                                            .child(senderRoom)
+                                            .child("messages")
+                                            .child(randomKey)
+                                            .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            database.getReference().child("chats")
+                                                    .child(receiverRoom)
+                                                    .child("messages")
+                                                    .child(randomKey)
+                                                    .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
             }
         }
     }
