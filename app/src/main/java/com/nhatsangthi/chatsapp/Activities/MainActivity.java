@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
 
-    User user;
+    User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        user = snapshot.getValue(User.class);
+                        currentUser = snapshot.getValue(User.class);
                     }
 
                     @Override
@@ -128,17 +128,44 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.showShimmerAdapter();
         binding.statusList.showShimmerAdapter();
 
+//        database.getReference().child("users").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                users.clear();
+//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                    User user = snapshot1.getValue(User.class);
+//                    if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
+//                        users.add(user);
+//                }
+//                binding.recyclerView.hideShimmerAdapter();
+//                usersAdapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    User user = snapshot1.getValue(User.class);
-                    if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
-                        users.add(user);
+
+                if (currentUser.getFriendList() == null) {
+                    binding.recyclerView.hideShimmerAdapter();
+                    Toast.makeText(MainActivity.this, "No Friend List", Toast.LENGTH_SHORT).show();
+                } else {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        User user = snapshot1.getValue(User.class);
+                        if (currentUser.getFriendList().containsValue(user.getUid())) {
+                            users.add(user);
+                        }
+                    }
+                    binding.recyclerView.hideShimmerAdapter();
+                    usersAdapter.notifyDataSetChanged();
                 }
-                binding.recyclerView.hideShimmerAdapter();
-                usersAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -215,8 +242,8 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     UserStatus userStatus = new UserStatus();
-                                    userStatus.setName(user.getName());
-                                    userStatus.setProfileImage(user.getProfileImage());
+                                    userStatus.setName(currentUser.getName());
+                                    userStatus.setProfileImage(currentUser.getProfileImage());
                                     userStatus.setLastUpdated(date.getTime());
 
                                     HashMap<String, Object> obj = new HashMap<>();
@@ -271,6 +298,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.search:
                 Toast.makeText(this, "Search clicked.", Toast.LENGTH_SHORT).show();
+
+                HashMap<String, Object> user = new HashMap<>();
+                user.put("bty4EsaYCdOrUfrW7MtNdtnPze32", "bty4EsaYCdOrUfrW7MtNdtnPze32");
+
+                database.getReference().child("users")
+                        .child(currentUser.getUid())
+                        .child("friendList").updateChildren(user);
                 break;
             case R.id.settings:
                 Toast.makeText(this, "Settings clicked.", Toast.LENGTH_SHORT).show();

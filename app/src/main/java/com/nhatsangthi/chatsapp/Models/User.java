@@ -1,8 +1,11 @@
 package com.nhatsangthi.chatsapp.Models;
 
+import java.util.HashMap;
+
 public class User {
 
     private String uid, name, phoneNumber, profileImage, token;
+    private HashMap<String, String> friendList;
 
     public User() {
     }
@@ -52,5 +55,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public HashMap<String, String> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(HashMap<String, String> friendList) {
+        this.friendList = friendList;
     }
 }
