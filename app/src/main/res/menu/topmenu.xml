@@ -9,7 +9,7 @@
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
     <item
-        android:id="@+id/addfriend"
+        android:id="@+id/addFriend"
         android:icon="@drawable/ic_add_user"
         android:title="AddFriend"
         app:showAsAction="always" />
@@ -17,8 +17,8 @@
         android:id="@+id/group"
         android:title="Groups" />
     <item
-        android:id="@+id/invite"
-        android:title="Invite" />
+        android:id="@+id/logout"
+        android:title="Logout" />
     <item
         android:id="@+id/settings"
         android:title="Settings" />

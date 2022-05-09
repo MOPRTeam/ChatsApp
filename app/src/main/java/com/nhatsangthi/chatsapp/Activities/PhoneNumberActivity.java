@@ -1,5 +1,6 @@
 package com.nhatsangthi.chatsapp.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.nhatsangthi.chatsapp.databinding.ActivityPhoneNumberBinding;
 
 public class PhoneNumberActivity extends AppCompatActivity {
@@ -23,6 +25,7 @@ public class PhoneNumberActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser() != null) {
+            System.out.println("CurrentUser: " + auth.getCurrentUser().getUid());
             Intent intent = new Intent(PhoneNumberActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

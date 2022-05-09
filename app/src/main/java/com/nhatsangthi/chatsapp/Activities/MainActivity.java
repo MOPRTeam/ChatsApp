@@ -17,7 +17,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -48,13 +47,11 @@ import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.Adapters.UsersAdapter;
 import com.nhatsangthi.chatsapp.databinding.ActivityMainBinding;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -247,21 +244,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        String currentId = FirebaseAuth.getInstance().getUid();
-        database.getReference().child("presence").child(currentId).setValue("Offline");
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            String currentId = FirebaseAuth.getInstance().getUid();
+            database.getReference().child("presence").child(currentId).setValue("Offline");
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.group:
-                startActivity(new Intent(MainActivity.this, GroupChatActivity.class));
-                break;
-            case R.id.addfriend:
+            case R.id.addFriend:
                 Intent intent = new Intent(MainActivity.this,FriendActivity.class);
                 intent.putExtra("UserList", users);
                 intent.putExtra("CurrentUser", currentUser);
                 startActivity(intent);
+                break;
+            case R.id.group:
+                startActivity(new Intent(MainActivity.this, GroupChatActivity.class));
+                break;
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(MainActivity.this, PhoneNumberActivity.class));
                 break;
             case R.id.settings:
                 database.getReference().child("users")
@@ -269,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
                         .child("friendList").child("bty4EsaYCdOrUfrW7MtNdtnPze32").removeValue();
                 break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
