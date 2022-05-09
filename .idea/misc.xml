@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable-v24/ic_add_user.xml" value="0.2555" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2375" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable-v24/receive_drawable.xml" value="0.2375" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/circle_bg.xml" value="0.2375" />
@@ -23,15 +24,18 @@
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/sent_drawable.xml" value="0.2375" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/drawable/textbox_outline.xml" value="0.2375" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_chat.xml" value="0.264" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_friend_request.xml" value="0.20521590423257802" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_group_chat.xml" value="0.264" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_otpactivity.xml" value="0.264" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_personal_chat_detail.xml" value="0.264" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_phone_number.xml" value="0.264" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_setting.xml" value="0.264" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/activity_setup_profile.xml" value="0.25" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/delete_dialog.xml" value="0.4" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/demo_layout.xml" value="0.20521590423257802" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/demo_status.xml" value="0.264" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/item_friend.xml" value="0.4" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/item_receive.xml" value="0.536" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/item_receive_group.xml" value="0.4" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/item_sent.xml" value="0.4" />
@@ -40,6 +44,7 @@
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/layout/row_conversation.xml" value="0.4" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/menu/chat_menu.xml" value="0.264" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/menu/menu.xml" value="0.25" />
+        <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/menu/search_menu.xml" value="0.20521590423257802" />
         <entry key="..\:/NAM_3/HK2/LapTrinhDiDong/FinalProject/ChatsApp/app/src/main/res/menu/topmenu.xml" value="0.264" />
       </map>
     </option>

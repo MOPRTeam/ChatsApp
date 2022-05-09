@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nhatsangthi.chatsapp" >
+    package="com.nhatsangthi.chatsapp">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatsApp"
-        android:usesCleartextTraffic="true" >
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activities.SettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.FriendActivity"
+            android:exported="false" />
         <activity
             android:name=".Activities.PersonalChatDetail"
             android:exported="false" />
@@ -30,7 +36,7 @@
         <activity
             android:name=".Activities.PhoneNumberActivity"
             android:exported="true"
-            android:windowSoftInputMode="stateVisible" >
+            android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,7 +68,7 @@
 
         <service
             android:name=".MyFirebaseService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

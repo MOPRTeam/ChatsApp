@@ -239,27 +239,9 @@ public class ChatActivity extends AppCompatActivity {
         binding.camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-//                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-
-                File photo = null;
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
-                {
-                    photo = new File(android.os.Environment.getExternalStorageDirectory(), "com.nhatsangthi.chatsapp/Image/"+File.separator+timeStamp+".png");
-                }
-                else
-                {
-                    photo = new File(getCacheDir(), "com.nhatsangthi.chatsapp/Image/"+File.separator+timeStamp+".png");
-                }
-                if (photo != null)
-                {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                    Uri selectedImageUri = Uri.fromFile(photo);
-                    startActivityForResult(intent, CAPTURE_IMAGE_CALLBACK);
-                }
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         });
 
@@ -301,10 +283,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-//        getSupportActionBar().setTitle(name);
-//
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     void sendNotification(String name, String message, String token) {
@@ -479,68 +457,6 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }
-                break;
-
-            case CAPTURE_IMAGE_CALLBACK:
-                if (data != null) {
-                    if (data.getData() != null) {
-                        Uri selectedImage = data.getData();
-                        Calendar calendar = Calendar.getInstance();
-                        StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
-                        dialog.show();
-                        reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                dialog.dismiss();
-                                if (task.isSuccessful()) {
-                                    reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            String filePath = uri.toString();
-
-                                            String messageTxt = binding.messageBox.getText().toString();
-
-                                            Date date = new Date();
-                                            Message message = new Message(messageTxt, senderUid, date.getTime());
-                                            message.setMessage("photo");
-                                            message.setImageUrl(filePath);
-                                            binding.messageBox.setText("");
-
-                                            String randomKey = database.getReference().push().getKey();
-
-                                            HashMap<String, Object> lastMsgObj = new HashMap<>();
-                                            lastMsgObj.put("lastMsg", message.getMessage());
-                                            lastMsgObj.put("lastMsgTime", date.getTime());
-
-                                            database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
-                                            database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
-
-                                            database.getReference().child("chats")
-                                                    .child(senderRoom)
-                                                    .child("messages")
-                                                    .child(randomKey)
-                                                    .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    database.getReference().child("chats")
-                                                            .child(receiverRoom)
-                                                            .child("messages")
-                                                            .child(randomKey)
-                                                            .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void unused) {
-
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
                 }
                 break;
         }

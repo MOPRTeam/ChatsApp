@@ -2,16 +2,22 @@ package com.nhatsangthi.chatsapp.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -32,6 +38,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nhatsangthi.chatsapp.Adapters.TopStatusAdapter;
+import com.nhatsangthi.chatsapp.DTO.ChatDTO;
+import com.nhatsangthi.chatsapp.DTO.SenderUserDTO;
+import com.nhatsangthi.chatsapp.Enums.FriendState;
 import com.nhatsangthi.chatsapp.Models.Status;
 import com.nhatsangthi.chatsapp.Models.UserStatus;
 import com.nhatsangthi.chatsapp.R;
@@ -39,21 +48,29 @@ import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.Adapters.UsersAdapter;
 import com.nhatsangthi.chatsapp.databinding.ActivityMainBinding;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     FirebaseDatabase database;
     ArrayList<User> users;
+    ArrayList<User> listFriends;
     UsersAdapter usersAdapter;
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
+    SearchView searchView;
 
-    User currentUser;
+    User currentUser = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
                                 .child("users")
                                 .child(FirebaseAuth.getInstance().getUid())
                                 .updateChildren(map);
-
-//                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -99,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
 
         users = new ArrayList<>();
+        listFriends = new ArrayList<>();
         userStatuses = new ArrayList<>();
 
         database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
@@ -114,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        usersAdapter = new UsersAdapter(this, users);
+        usersAdapter = new UsersAdapter(this, listFriends);
         statusAdapter = new TopStatusAdapter(this, userStatuses);
 
 //        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -128,76 +144,21 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.showShimmerAdapter();
         binding.statusList.showShimmerAdapter();
 
-//        database.getReference().child("users").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                users.clear();
-//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                    User user = snapshot1.getValue(User.class);
-//                    if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
-//                        users.add(user);
-//                }
-//                binding.recyclerView.hideShimmerAdapter();
-//                usersAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
-
-                if (currentUser.getFriendList() == null) {
-                    binding.recyclerView.hideShimmerAdapter();
-                    Toast.makeText(MainActivity.this, "No Friend List", Toast.LENGTH_SHORT).show();
-                } else {
-                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                        User user = snapshot1.getValue(User.class);
-                        if (currentUser.getFriendList().containsValue(user.getUid())) {
+                for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    User user = snapshot1.getValue(User.class);
+                    if(!Objects.isNull(user.getUid()))
+                        if(!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
                             users.add(user);
-                        }
-                    }
-                    binding.recyclerView.hideShimmerAdapter();
-                    usersAdapter.notifyDataSetChanged();
                 }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        database.getReference().child("stories").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    userStatuses.clear();
-                    for (DataSnapshot storySnapshot : snapshot.getChildren()) {
-                        UserStatus status = new UserStatus();
-                        status.setName(storySnapshot.child("name").getValue(String.class));
-                        status.setProfileImage(storySnapshot.child("profileImage").getValue(String.class));
-                        status.setLastUpdated(storySnapshot.child("lastUpdated").getValue(Long.class));
-
-                        ArrayList<Status> statuses = new ArrayList<>();
-
-                        for (DataSnapshot statusSnapshot : storySnapshot.child("statuses").getChildren()) {
-                            Status sampleStatus = statusSnapshot.getValue(Status.class);
-                            statuses.add(sampleStatus);
-                        }
-
-                        status.setStatuses(statuses);
-                        userStatuses.add(status);
-                    }
-                    binding.statusList.hideShimmerAdapter();
-                    statusAdapter.notifyDataSetChanged();
-                }
+                binding.recyclerView.hideShimmerAdapter();
+                filterFriend();
+                usersAdapter.notifyDataSetChanged();
+                statusAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -296,26 +257,167 @@ public class MainActivity extends AppCompatActivity {
             case R.id.group:
                 startActivity(new Intent(MainActivity.this, GroupChatActivity.class));
                 break;
-            case R.id.search:
-                Toast.makeText(this, "Search clicked.", Toast.LENGTH_SHORT).show();
-
-                HashMap<String, Object> user = new HashMap<>();
-                user.put("bty4EsaYCdOrUfrW7MtNdtnPze32", "bty4EsaYCdOrUfrW7MtNdtnPze32");
-
-                database.getReference().child("users")
-                        .child(currentUser.getUid())
-                        .child("friendList").updateChildren(user);
+            case R.id.addfriend:
+                Intent intent = new Intent(MainActivity.this,FriendActivity.class);
+                intent.putExtra("UserList", users);
+                intent.putExtra("CurrentUser", currentUser);
+                startActivity(intent);
                 break;
             case R.id.settings:
-                Toast.makeText(this, "Settings clicked.", Toast.LENGTH_SHORT).show();
+                database.getReference().child("users")
+                        .child(currentUser.getUid())
+                        .child("friendList").child("bty4EsaYCdOrUfrW7MtNdtnPze32").removeValue();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void filterFriend()
+    {
+        database.getReference().child("friends").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (users.size() > 0) {
+                    listFriends.clear();
+                    ArrayList<String> listIdFriend = new ArrayList<>();
+                    for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
+                        if (snapshotTemp.getValue().equals(FriendState.FRIEND.name())) {
+                            listIdFriend.add(snapshotTemp.getKey());
+                        }
+                    }
+                    for (User user : users) {
+                        if (listIdFriend.contains(user.getUid()))
+                            listFriends.add(user);
+                    }
+                    showStoriesOfFriend(listIdFriend);
+                    sortUsers();
+                } else {
+                    Toast.makeText(MainActivity.this, "No Friend List", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void showStoriesOfFriend(ArrayList<String> listIDFriend)
+    {
+        database.getReference().child("stories").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    userStatuses.clear();
+
+                    for (DataSnapshot storySnapshot : snapshot.getChildren()) {
+                        if (listIDFriend.contains(storySnapshot.getKey())) {
+                            UserStatus status = new UserStatus();
+                            status.setName(storySnapshot.child("name").getValue(String.class));
+                            status.setProfileImage(storySnapshot.child("profileImage").getValue(String.class));
+                            status.setLastUpdated(storySnapshot.child("lastUpdated").getValue(Long.class));
+
+                            ArrayList<Status> statuses = new ArrayList<>();
+
+                            for (DataSnapshot statusSnapshot : storySnapshot.child("statuses").getChildren()) {
+                                Status sampleStatus = statusSnapshot.getValue(Status.class);
+                                statuses.add(sampleStatus);
+                            }
+
+                            status.setStatuses(statuses);
+                            userStatuses.add(status);
+                        }
+                    }
+
+                    binding.statusList.hideShimmerAdapter();
+                    statusAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void sortUsers()
+    {
+        database.getReference().child("chats").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (listFriends.size() > 0) {
+                    List<SenderUserDTO> senderUsers = new ArrayList<>();
+                    for (User user : listFriends) {
+                        senderUsers.add(new SenderUserDTO(user,Long.MAX_VALUE));
+                    }
+
+                    for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
+                        if (snapshotTemp.getKey().startsWith(FirebaseAuth.getInstance().getUid())) {
+                            ChatDTO temp = snapshotTemp.getValue(ChatDTO.class);
+                            Optional<User> tempUser = listFriends.stream().filter(e -> snapshotTemp.getKey().endsWith(e.getUid())).findFirst();
+                            if (tempUser.isPresent()) {
+                                senderUsers.remove(senderUsers.stream().filter(e -> e.getUser().getUid().equals(tempUser.get().getUid())).findFirst().get());
+                                senderUsers.add(new SenderUserDTO(tempUser.get(), temp.getLastMsgTime()));
+                            }
+                        }
+                    }
+                    senderUsers.sort(Comparator.comparingLong(SenderUserDTO::getLastMessageTime).reversed());
+                    listFriends.clear();
+                    for (SenderUserDTO user : senderUsers) {
+                        listFriends.add(user.getUser());
+                    }
+
+                    binding.recyclerView.hideShimmerAdapter();
+                    usersAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(MainActivity.this, "No Friend List", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.topmenu, menu);
-        return super.onCreateOptionsMenu(menu);
+
+        SearchManager searchManager=(SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search_friend).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                usersAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                usersAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        }
+        if (searchView.isIconified()) {
+            super.onBackPressed();
+        }
     }
 }
