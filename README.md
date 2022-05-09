@@ -2,7 +2,7 @@
 - Đề tài: **XÂY DỰNG ỨNG DỤNG NHẮN TIN TƯƠNG TỰ WHATSAPP**
 - Giảng viên hướng dẫn: **TS. Huỳnh Xuân Phụng**
 - Sinh viên thực hiện:
-	- Hoàng Trung Nhật\t\t. MSSV: 19110253
+	- Hoàng Trung Nhật		. MSSV: 19110253
 	- Phan Thanh Sang		. MSSV: 19110276
 	- Quách Đinh Trường Thi	. MSSV: 19110294
 
