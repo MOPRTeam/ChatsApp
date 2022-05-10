@@ -191,6 +191,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String messageTxt = binding.messageBox.getText().toString();
 
+                if (messageTxt.trim().equals(""))
+                    return;
+
                 Date date = new Date();
                 Message message = new Message(messageTxt, senderUid, date.getTime());
                 binding.messageBox.setText("");

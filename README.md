@@ -1,4 +1,4 @@
-# Đồ án môn học Lập trình Android
+# Đồ án môn học Lập Trình Di Động
 - Đề tài: **XÂY DỰNG ỨNG DỤNG NHẮN TIN TƯƠNG TỰ WHATSAPP**
 - Giảng viên hướng dẫn: **TS. Huỳnh Xuân Phụng**
 - Sinh viên thực hiện:
