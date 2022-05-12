@@ -2,8 +2,10 @@ package com.nhatsangthi.chatsapp.DTO;
 
 
 public class ChatDTO {
+
     private String chatID;
     private long lastMsgTime;
+
     public ChatDTO() {
     }
 

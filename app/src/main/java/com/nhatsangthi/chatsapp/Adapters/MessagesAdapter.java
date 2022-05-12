@@ -82,18 +82,22 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 .build();
 
         ReactionPopup popup = new ReactionPopup(context, config, (pos) -> {
-            if (pos < 0) {
-                return true;
-            }
-
             if (holder.getClass() == SentViewHolder.class) {
                 SentViewHolder viewHolder = (SentViewHolder) holder;
-                viewHolder.binding.feeling.setImageResource(reactions[pos]);
-                viewHolder.binding.feeling.setVisibility(View.VISIBLE);
+                if (pos >= 0) {
+                    viewHolder.binding.feeling.setImageResource(reactions[pos]);
+                    viewHolder.binding.feeling.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.binding.feeling.setVisibility(View.GONE);
+                }
             } else {
                 ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
-                viewHolder.binding.feeling.setImageResource(reactions[pos]);
-                viewHolder.binding.feeling.setVisibility(View.VISIBLE);
+                if (pos >= 0) {
+                    viewHolder.binding.feeling.setImageResource(reactions[pos]);
+                    viewHolder.binding.feeling.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.binding.feeling.setVisibility(View.GONE);
+                }
             }
 
             message.setFeeling(pos);
@@ -221,7 +225,6 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             viewHolder.binding.message.setText(message.getMessage());
 
             if (message.getFeeling() >= 0) {
-//                message.setFeeling(reactions[(int) message.getFeeling()]);
                 viewHolder.binding.feeling.setImageResource(reactions[message.getFeeling()]);
                 viewHolder.binding.feeling.setVisibility(View.VISIBLE);
             } else {

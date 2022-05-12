@@ -163,7 +163,11 @@ public class ChatActivity extends AppCompatActivity {
                         }
 
                         adapter = new MessagesAdapter(ChatActivity.this, messages, senderRoom, receiverRoom);
-                        adapter.notifyDataSetChanged();
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
+                        layoutManager.setStackFromEnd(true);
+                        binding.recyclerView.setLayoutManager(layoutManager);
+                        binding.recyclerView.setAdapter(adapter);
+//                        adapter.notifyDataSetChanged();
                         binding.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                     }
 
