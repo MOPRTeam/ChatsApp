@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.nhatsangthi.chatsapp.Activities.DashBoard;
 import com.nhatsangthi.chatsapp.Activities.MainActivity;
 import com.nhatsangthi.chatsapp.Models.Status;
 import com.nhatsangthi.chatsapp.Models.UserStatus;
@@ -56,7 +57,7 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
                     myStories.add(new MyStory(status.getImageUrl()));
                 }
 
-                new StoryView.Builder(((MainActivity)context).getSupportFragmentManager())
+                new StoryView.Builder(((DashBoard)context).getSupportFragmentManager())
                         .setStoriesList(myStories) // Required
                         .setStoryDuration(5000) // Default is 2000 Millis (2 Seconds)
                         .setTitleText(userStatus.getName()) // Default is Hidden
