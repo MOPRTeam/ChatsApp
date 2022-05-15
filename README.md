@@ -10,6 +10,7 @@
 ### Yêu cầu
 - IDE: Android Studio
 - Runtime version: 11.0.11
+- Gradle version: 7.2
 - VM: OpenJDK 64-Bit Server VM by Oracle Corporation
 ### Lưu ý
 - Các nhóm khác khi build project của nhóm mình thì sẽ không chạy được chức năng OTP, nguyên nhân là do Android Studio của 
