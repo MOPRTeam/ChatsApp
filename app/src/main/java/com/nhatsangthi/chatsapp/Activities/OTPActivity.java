@@ -129,7 +129,7 @@ public class OTPActivity extends AppCompatActivity {
     }
 
     private void goToMainActivity() {
-        Intent intent = new Intent(OTPActivity.this, MainActivity.class);
+        Intent intent = new Intent(OTPActivity.this, DashBoard.class);
         startActivity(intent);
         finishAffinity();
     }
