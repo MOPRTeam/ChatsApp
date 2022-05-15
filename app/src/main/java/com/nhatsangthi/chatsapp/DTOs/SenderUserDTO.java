@@ -1,4 +1,4 @@
-package com.nhatsangthi.chatsapp.DTO;
+package com.nhatsangthi.chatsapp.DTOs;
 
 
 import com.nhatsangthi.chatsapp.Models.User;

@@ -24,13 +24,6 @@ public class PhoneNumberActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        if (auth.getCurrentUser() != null) {
-            System.out.println("CurrentUser: " + auth.getCurrentUser().getUid());
-            Intent intent = new Intent(PhoneNumberActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
         getSupportActionBar().hide();
 
         binding.phoneBox.requestFocus();

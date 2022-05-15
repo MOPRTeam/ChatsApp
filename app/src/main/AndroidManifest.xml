@@ -11,6 +11,18 @@
         android:theme="@style/Theme.ChatsApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activities.DashBoard"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Activities.SettingActivity"
             android:exported="false" />
         <activity
@@ -36,13 +48,7 @@
         <activity
             android:name=".Activities.PhoneNumberActivity"
             android:exported="true"
-            android:windowSoftInputMode="stateVisible">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".Activities.MainActivity"
             android:exported="true"

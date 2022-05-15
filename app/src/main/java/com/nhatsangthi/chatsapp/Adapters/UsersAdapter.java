@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.nhatsangthi.chatsapp.Activities.ChatActivity;
 import com.nhatsangthi.chatsapp.R;
 import com.nhatsangthi.chatsapp.Models.User;
+import com.nhatsangthi.chatsapp.databinding.ChatItemLayoutBinding;
 import com.nhatsangthi.chatsapp.databinding.RowConversationBinding;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +42,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
     @NonNull
     @Override
     public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.row_conversation, parent, false);
+//        View view = LayoutInflater.from(context).inflate(R.layout.row_conversation, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.chat_item_layout, parent, false);
 
         return new UsersViewHolder(view);
     }
@@ -132,11 +134,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
 
     public class UsersViewHolder extends RecyclerView.ViewHolder {
 
-        RowConversationBinding binding;
-
+//        RowConversationBinding binding;
+    ChatItemLayoutBinding binding;
         public UsersViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = RowConversationBinding.bind(itemView);
+//            binding = RowConversationBinding.bind(itemView);
+            binding = ChatItemLayoutBinding.bind(itemView);
         }
     }
 

@@ -1,51 +1,52 @@
-package com.nhatsangthi.chatsapp.Activities;
+package com.nhatsangthi.chatsapp.Fragments;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
+import android.transition.TransitionInflater;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.nhatsangthi.chatsapp.Activities.FriendActivity;
 import com.nhatsangthi.chatsapp.Adapters.TopStatusAdapter;
+import com.nhatsangthi.chatsapp.Adapters.UsersAdapter;
 import com.nhatsangthi.chatsapp.DTOs.ChatDTO;
 import com.nhatsangthi.chatsapp.DTOs.SenderUserDTO;
 import com.nhatsangthi.chatsapp.Enums.FriendState;
 import com.nhatsangthi.chatsapp.Models.Status;
+import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.Models.UserStatus;
 import com.nhatsangthi.chatsapp.R;
-import com.nhatsangthi.chatsapp.Models.User;
-import com.nhatsangthi.chatsapp.Adapters.UsersAdapter;
-import com.nhatsangthi.chatsapp.databinding.ActivityMainBinding;
+import com.nhatsangthi.chatsapp.databinding.FragmentMainBinding;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -55,9 +56,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MainActivity extends AppCompatActivity {
+public class MainFragment extends Fragment {
 
-    ActivityMainBinding binding;
+    FragmentMainBinding binding;
     FirebaseDatabase database;
     ArrayList<User> users;
     ArrayList<User> listFriends;
@@ -65,30 +66,20 @@ public class MainActivity extends AppCompatActivity {
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
-    SearchView searchView;
 
     User currentUser = new User();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    }
 
-        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(0)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentMainBinding.bind(inflater.inflate(R.layout.fragment_main, container, false));
 
-        mFirebaseRemoteConfig.fetchAndActivate().addOnSuccessListener(new OnSuccessListener<Boolean>() {
-            @Override
-            public void onSuccess(Boolean aBoolean) {
-                String toolbarColor = mFirebaseRemoteConfig.getString("toolbarColor");
-                getSupportActionBar()
-                        .setBackgroundDrawable(new ColorDrawable(Color.parseColor(toolbarColor)));
-            }
-        });
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("ChatsApp");
+        setHasOptionsMenu(true);
 
         database = FirebaseDatabase.getInstance();
 
@@ -106,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        dialog = new ProgressDialog(this);
+        dialog = new ProgressDialog(getActivity());
         dialog.setMessage("Uploading Image...");
         dialog.setCancelable(false);
 
@@ -127,11 +118,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        usersAdapter = new UsersAdapter(this, listFriends);
-        statusAdapter = new TopStatusAdapter(this, userStatuses);
+        usersAdapter = new UsersAdapter(getActivity(), listFriends);
+        statusAdapter = new TopStatusAdapter(getActivity(), userStatuses);
 
 //        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(RecyclerView.HORIZONTAL);
         binding.statusList.setLayoutManager(layoutManager);
         binding.statusList.setAdapter(statusAdapter);
@@ -164,24 +155,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.status:
-                        Intent intent = new Intent();
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(intent, 75);
-                        break;
-                }
-                return false;
-            }
-        });
+        return binding.getRoot();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (data != null) {
@@ -235,43 +213,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        String currentId = FirebaseAuth.getInstance().getUid();
-        database.getReference().child("presence").child(currentId).setValue("Online");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            String currentId = FirebaseAuth.getInstance().getUid();
-            database.getReference().child("presence").child(currentId).setValue("Offline");
-        }
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.topmenu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addFriend:
-                Intent intent = new Intent(MainActivity.this,FriendActivity.class);
+                Intent intent = new Intent(getActivity(), FriendActivity.class);
                 intent.putExtra("UserList", users);
                 intent.putExtra("CurrentUser", currentUser);
                 startActivity(intent);
                 break;
             case R.id.group:
-                startActivity(new Intent(MainActivity.this, GroupChatActivity.class));
+//                startActivity(new Intent(this, GroupChatActivity.class));
                 break;
             case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                startActivity(new Intent(MainActivity.this, PhoneNumberActivity.class));
+//                FirebaseAuth.getInstance().signOut();
+//                finish();
+//                startActivity(new Intent(this, PhoneNumberActivity.class));
                 break;
             case R.id.settings:
-                database.getReference().child("users")
-                        .child(currentUser.getUid())
-                        .child("friendList").child("bty4EsaYCdOrUfrW7MtNdtnPze32").removeValue();
-                break;
+//                database.getReference().child("users")
+//                        .child(currentUser.getUid())
+//                        .child("friendList").child("bty4EsaYCdOrUfrW7MtNdtnPze32").removeValue();
+//                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -298,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                     showStoriesOfFriend(listIdFriend);
                     sortUsers();
                 } else {
-                    Toast.makeText(MainActivity.this, "No Friend List", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "No Friend List", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -379,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                     binding.recyclerView.hideShimmerAdapter();
                     usersAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(MainActivity.this, "No Friend List", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "No Friend List", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -389,39 +357,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.topmenu, menu);
 
-        SearchManager searchManager=(SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                usersAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                usersAdapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
-        }
-        if (searchView.isIconified()) {
-            super.onBackPressed();
-        }
-    }
 }

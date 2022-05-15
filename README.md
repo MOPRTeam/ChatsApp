@@ -23,7 +23,7 @@ các bạn chưa được config vào Firebase Project của tụi mình nên Fi
 - Firebase Cloud Messaging: https://firebase.google.com/docs/cloud-messaging/android/client
 - Volley Android: https://google.github.io/volley/
  
-## Thư viện dùng trong project
+## Tài nguyên dùng trong project
 - OTP View: https://github.com/mukeshsolanki/android-otpview-pinview
 - Glide Image Processing: https://github.com/bumptech/glide
 - Circular Image View: https://github.com/hdodenhof/CircleImageView
@@ -31,3 +31,4 @@ các bạn chưa được config vào Firebase Project của tụi mình nên Fi
 - Circular Status View: https://github.com/3llomi/CircularStatusView
 - Shimmer RecyclerView: https://github.com/sharish/ShimmerRecyclerView
 - Launcher Icon Generator: https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html
+- Splash Logo: https://lottiefiles.com/83667-arty-chat

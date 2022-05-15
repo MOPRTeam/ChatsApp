@@ -40,6 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nhatsangthi.chatsapp.Adapters.MessagesAdapter;
+import com.nhatsangthi.chatsapp.Constants.AllConstants;
 import com.nhatsangthi.chatsapp.Models.Message;
 import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.R;
@@ -48,10 +49,6 @@ import com.nhatsangthi.chatsapp.databinding.ActivityChatBinding;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -72,11 +69,6 @@ public class ChatActivity extends AppCompatActivity {
     ProgressDialog dialog;
     String senderUid, receiverUid;
     User currentUser = new User();
-
-    private static final int REQUEST_GET_CONTENT = 101;
-    private static final int REQUEST_IMAGE_CAPTURE = 102;
-    private static final int CAPTURE_IMAGE_CALLBACK = 103;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,7 +231,7 @@ public class ChatActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_GET_CONTENT);
+                startActivityForResult(intent, AllConstants.REQUEST_GET_CONTENT);
             }
         });
 
@@ -248,7 +240,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                startActivityForResult(intent, AllConstants.REQUEST_IMAGE_CAPTURE);
             }
         });
 
@@ -296,8 +288,6 @@ public class ChatActivity extends AppCompatActivity {
         try {
             RequestQueue queue = Volley.newRequestQueue(this);
 
-            String url = "https://fcm.googleapis.com/fcm/send";
-
             JSONObject data = new JSONObject();
             data.put("title", currentUser.getName());
             data.put("body", message);
@@ -305,7 +295,7 @@ public class ChatActivity extends AppCompatActivity {
             notificationData.put("notification", data);
             notificationData.put("to", token);
 
-            JsonObjectRequest request = new JsonObjectRequest(url, notificationData,
+            JsonObjectRequest request = new JsonObjectRequest(AllConstants.NOTIFICATION_URL, notificationData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -321,8 +311,7 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     HashMap<String, String> map = new HashMap<>();
-                    String key = "Key=AAAAqcARJAE:APA91bHHYtVDUwlqcOrGOTJhvm3Oa8j0_uUr5yYkzo74EFJEut6cG0zGkuBi39udSbaWSkhhm0w2EqP9xYgqJL9xgUaerhm8uc_QqoJIfgNO5__Ad7HDczvbeoA7E3-0wkaOccUXKkzV";
-                    map.put("Authorization", key);
+                    map.put("Authorization", "key=" + AllConstants.SERVER_KEY);
                     map.put("Content-Type", "application/json");
 
                     return map;
@@ -340,7 +329,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case REQUEST_GET_CONTENT:
+            case AllConstants.REQUEST_GET_CONTENT:
                 if (data != null) {
                     if (data.getData() != null) {
                         Uri selectedImage = data.getData();
@@ -402,7 +391,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 break;
 
-            case REQUEST_IMAGE_CAPTURE:
+            case AllConstants.REQUEST_IMAGE_CAPTURE:
                 if (data != null) {
                     Bitmap bmp = (Bitmap) data.getExtras().get("data");
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();

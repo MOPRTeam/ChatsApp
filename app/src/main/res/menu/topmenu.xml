@@ -3,12 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/action_search_friend"
-        android:title="Search"
-        android:icon="@drawable/ic_search"
-        app:showAsAction="always"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
-    <item
         android:id="@+id/addFriend"
         android:icon="@drawable/ic_add_user"
         android:title="AddFriend"
