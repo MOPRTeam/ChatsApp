@@ -63,9 +63,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
-        User friend=friends.get(position);
+        User friend = friends.get(position);
 
-        if(Objects.isNull(friend))
+        if (Objects.isNull(friend))
             return;
         //Get FriendState
         FirebaseDatabase.getInstance().getReference()
@@ -77,11 +77,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         //Disable deny button
                         holder.binding.deny.setVisibility(View.GONE);
-                        if(snapshot.exists())
-                        {
+                        if (snapshot.exists()) {
                             //Lưu ý: Hàm onComplete bị ghi đè sau khi thực hiện xong event, nên ta đổi ngược lại các thông báo(Toast) trong hàm onComplete
                             String friendState = snapshot.getValue(String.class);
-                            if(friendState.equals(FriendState.FRIEND.name())) {
+                            if (friendState.equals(FriendState.FRIEND.name())) {
                                 holder.binding.addRemove.setText("Unfriend");
                                 holder.binding.addRemove.setBackgroundColor(context.getResources().getColor(R.color.semiRed));
                                 holder.binding.addRemove.setOnClickListener(new View.OnClickListener() {
@@ -123,10 +122,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
                                    }
                                 );
                             }
-                        }
-                        else {
+                        } else {
                             holder.binding.addRemove.setText("ADD");
-                            holder.binding.addRemove.setBackgroundColor(context.getResources().getColor(R.color.green));
+                            holder.binding.addRemove.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
                             holder.binding.addRemove.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -137,9 +135,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
                         }
                     }
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
+                    public void onCancelled(@NonNull DatabaseError error) {}
                 });
 
 
@@ -279,7 +275,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
                             .child("friends").child(friend.getUid()).child(FirebaseAuth.getInstance().getUid()).removeValue( new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                            if(Objects.isNull(error))
+                            if (Objects.isNull(error))
                                 //don't send notification in this case
                                 Toast.makeText(context, "Unfriend " + friend.getName() + " successfully!", Toast.LENGTH_LONG).show();
                             else {
@@ -303,7 +299,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public int getItemCount() {
-        if(!Objects.isNull(friends))
+        if (!Objects.isNull(friends))
             return friends.size();
         return 0;
     }
@@ -313,7 +309,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
         ItemFriendBinding binding;
         public FriendViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding= ItemFriendBinding.bind(itemView);
+            binding = ItemFriendBinding.bind(itemView);
         }
     }
 
@@ -322,22 +318,19 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                String stringSearch=charSequence.toString();
-                if(stringSearch.isEmpty()) {
+                String stringSearch = charSequence.toString();
+                if (stringSearch.isEmpty()) {
                     friends = listFriendOrigin;
-                }
-                else
-                {
+                } else {
                     ArrayList<User> searchFriends=new ArrayList<>();
-                    for(User user: listFriendOrigin)
-                    {
-                        if(user.getName().toLowerCase().contains(stringSearch)||user.getPhoneNumber().contains(stringSearch))
+                    for (User user : listFriendOrigin) {
+                        if (user.getName().toLowerCase().contains(stringSearch) || user.getPhoneNumber().contains(stringSearch))
                             searchFriends.add(user);
                     }
                     friends=searchFriends;
                 }
-                FilterResults filterResults=new FilterResults();
-                filterResults.values=friends;
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = friends;
                 return filterResults;
             }
 

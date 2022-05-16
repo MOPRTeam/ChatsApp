@@ -10,12 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,6 +60,7 @@ public class MainFragment extends Fragment {
     FirebaseDatabase database;
     ArrayList<User> users;
     ArrayList<User> listFriends;
+    ArrayList<String> listFriendIds;
     UsersAdapter usersAdapter;
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
@@ -103,7 +102,9 @@ public class MainFragment extends Fragment {
 
         users = new ArrayList<>();
         listFriends = new ArrayList<>();
+        listFriendIds = new ArrayList<>();
         userStatuses = new ArrayList<>();
+
 
         database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
                 .addValueEventListener(new ValueEventListener() {
@@ -129,24 +130,17 @@ public class MainFragment extends Fragment {
 
         binding.recyclerView.setAdapter(usersAdapter);
 
-        binding.recyclerView.showShimmerAdapter();
-        binding.statusList.showShimmerAdapter();
-
-        database.getReference().child("users").addValueEventListener(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
+        database.getReference().child("friends").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                users.clear();
-                for(DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    User user = snapshot1.getValue(User.class);
-                    if(!Objects.isNull(user.getUid()))
-                        if(!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
-                            users.add(user);
+                listFriendIds.clear();
+                for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
+                    if (snapshotTemp.getValue().equals(FriendState.FRIEND.name())) {
+                        listFriendIds.add(snapshotTemp.getKey());
+                    }
                 }
-                binding.recyclerView.hideShimmerAdapter();
-                filterFriend();
-                usersAdapter.notifyDataSetChanged();
-                statusAdapter.notifyDataSetChanged();
+
+                showFriends(listFriendIds);
             }
 
             @Override
@@ -154,6 +148,13 @@ public class MainFragment extends Fragment {
 
             }
         });
+
+        if (listFriends.isEmpty() || userStatuses.isEmpty()) {
+            binding.view2.setVisibility(View.GONE);
+        }
+        else {
+            binding.view2.setVisibility(View.VISIBLE);
+        }
 
         return binding.getRoot();
     }
@@ -227,9 +228,6 @@ public class MainFragment extends Fragment {
                 intent.putExtra("CurrentUser", currentUser);
                 startActivity(intent);
                 break;
-            case R.id.group:
-//                startActivity(new Intent(this, GroupChatActivity.class));
-                break;
             case R.id.logout:
 //                FirebaseAuth.getInstance().signOut();
 //                finish();
@@ -245,36 +243,74 @@ public class MainFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void filterFriend()
-    {
-        database.getReference().child("friends").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+    void showFriends(ArrayList<String> listFriendIds) {
+        binding.recyclerView.showShimmerAdapter();
+        binding.statusList.showShimmerAdapter();
 
-                if (users.size() > 0) {
-                    listFriends.clear();
-                    ArrayList<String> listIdFriend = new ArrayList<>();
-                    for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
-                        if (snapshotTemp.getValue().equals(FriendState.FRIEND.name())) {
-                            listIdFriend.add(snapshotTemp.getKey());
+//        database.getReference().child("friends").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                if (users.size() > 0) {
+//                    listFriends.clear();
+//                    ArrayList<String> listIdFriend = new ArrayList<>();
+//                    for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
+//                        if (snapshotTemp.getValue().equals(FriendState.FRIEND.name())) {
+//                            listIdFriend.add(snapshotTemp.getKey());
+//                        }
+//                    }
+//                    for (User user : users) {
+//                        if (listIdFriend.contains(user.getUid()))
+//                            listFriends.add(user);
+//                    }
+//                    showStoriesOfFriend(listIdFriend);
+//                    sortUsers();
+//                } else {
+//                    Toast.makeText(getActivity(), "No Friend List", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+        listFriends.clear();
+        if (listFriendIds.isEmpty()) {
+            Toast.makeText(getActivity(), "No Friends", Toast.LENGTH_SHORT).show();
+        } else {
+            database.getReference().child("users").addValueEventListener(new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    users.clear();
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        User user = snapshot1.getValue(User.class);
+                        if (!Objects.isNull(user.getUid())) {
+                            users.add(user);
                         }
                     }
-                    for (User user : users) {
-                        if (listIdFriend.contains(user.getUid()))
-                            listFriends.add(user);
+
+                    if (users.size() > 0) {
+                        for (User user : users) {
+                            if (listFriendIds.contains(user.getUid()))
+                                listFriends.add(user);
+                        }
+                        showStoriesOfFriend(listFriendIds);
+                        sortUsers();
                     }
-                    showStoriesOfFriend(listIdFriend);
-                    sortUsers();
-                } else {
-                    Toast.makeText(getActivity(), "No Friend List", Toast.LENGTH_SHORT).show();
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+
+        binding.recyclerView.hideShimmerAdapter();
+        binding.statusList.hideShimmerAdapter();
     }
 
     private void showStoriesOfFriend(ArrayList<String> listIDFriend)

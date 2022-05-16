@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -328,15 +329,82 @@ public class ChatActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case AllConstants.REQUEST_GET_CONTENT:
-                if (data != null) {
-                    if (data.getData() != null) {
-                        Uri selectedImage = data.getData();
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case AllConstants.REQUEST_GET_CONTENT:
+                    if (data != null) {
+                        if (data.getData() != null) {
+                            Uri selectedImage = data.getData();
+                            Calendar calendar = Calendar.getInstance();
+                            StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
+                            dialog.show();
+                            reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                    dialog.dismiss();
+                                    if (task.isSuccessful()) {
+                                        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                String filePath = uri.toString();
+
+                                                String messageTxt = binding.messageBox.getText().toString();
+
+                                                Date date = new Date();
+                                                Message message = new Message(messageTxt, senderUid, date.getTime());
+                                                message.setMessage("photo");
+                                                message.setImageUrl(filePath);
+                                                binding.messageBox.setText("");
+
+                                                String randomKey = database.getReference().push().getKey();
+
+                                                HashMap<String, Object> lastMsgObj = new HashMap<>();
+                                                lastMsgObj.put("lastMsg", message.getMessage());
+                                                lastMsgObj.put("lastMsgTime", date.getTime());
+
+                                                database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
+                                                database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
+
+                                                database.getReference().child("chats")
+                                                        .child(senderRoom)
+                                                        .child("messages")
+                                                        .child(randomKey)
+                                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        database.getReference().child("chats")
+                                                                .child(receiverRoom)
+                                                                .child("messages")
+                                                                .child(randomKey)
+                                                                .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    break;
+
+                case AllConstants.REQUEST_IMAGE_CAPTURE:
+                    if (data != null) {
+                        Bitmap bmp = (Bitmap) data.getExtras().get("data");
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
+                        bmp.recycle();
+
                         Calendar calendar = Calendar.getInstance();
                         StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
                         dialog.show();
-                        reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        reference.putBytes(byteArray).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 dialog.dismiss();
@@ -388,73 +456,8 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         });
                     }
-                }
-                break;
-
-            case AllConstants.REQUEST_IMAGE_CAPTURE:
-                if (data != null) {
-                    Bitmap bmp = (Bitmap) data.getExtras().get("data");
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    bmp.recycle();
-
-                    Calendar calendar = Calendar.getInstance();
-                    StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
-                    dialog.show();
-                    reference.putBytes(byteArray).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            dialog.dismiss();
-                            if (task.isSuccessful()) {
-                                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        String filePath = uri.toString();
-
-                                        String messageTxt = binding.messageBox.getText().toString();
-
-                                        Date date = new Date();
-                                        Message message = new Message(messageTxt, senderUid, date.getTime());
-                                        message.setMessage("photo");
-                                        message.setImageUrl(filePath);
-                                        binding.messageBox.setText("");
-
-                                        String randomKey = database.getReference().push().getKey();
-
-                                        HashMap<String, Object> lastMsgObj = new HashMap<>();
-                                        lastMsgObj.put("lastMsg", message.getMessage());
-                                        lastMsgObj.put("lastMsgTime", date.getTime());
-
-                                        database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
-                                        database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
-
-                                        database.getReference().child("chats")
-                                                .child(senderRoom)
-                                                .child("messages")
-                                                .child(randomKey)
-                                                .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                database.getReference().child("chats")
-                                                        .child(receiverRoom)
-                                                        .child("messages")
-                                                        .child(randomKey)
-                                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-                break;
+                    break;
+            }
         }
     }
 

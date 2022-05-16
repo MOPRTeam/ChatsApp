@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.nhatsangthi.chatsapp.Activities.DashBoard;
 import com.nhatsangthi.chatsapp.Activities.MainActivity;
 
 public class MyFirebaseService extends FirebaseMessagingService {
@@ -26,7 +27,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String title, String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DashBoard.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -35,7 +36,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_send)
+                        .setSmallIcon(R.drawable.ic_chat)
                         .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)

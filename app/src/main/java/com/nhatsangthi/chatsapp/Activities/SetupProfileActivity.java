@@ -68,7 +68,7 @@ public class SetupProfileActivity extends AppCompatActivity {
 
                 dialog.show();
                 if (selectedImage != null) {
-                    StorageReference reference = storage.getReference().child("Profiles").child(auth.getUid());
+                    StorageReference reference = storage.getReference().child("profiles").child(auth.getUid());
                     reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {

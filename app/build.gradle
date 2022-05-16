@@ -71,5 +71,4 @@ dependencies {
     implementation 'com.airbnb.android:lottie:5.1.1'
 
     implementation 'com.github.ismaeldivita:chip-navigation-bar:1.4.0'
-
 }
