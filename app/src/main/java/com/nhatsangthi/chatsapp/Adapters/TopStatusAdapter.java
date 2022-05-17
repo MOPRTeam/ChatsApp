@@ -43,7 +43,7 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
     public void onBindViewHolder(@NonNull TopStatusViewHolder holder, int position) {
         UserStatus userStatus = userStatuses.get(position);
 
-        Status lastStatus = userStatus.getStatuses().get(userStatus.getStatuses().size() - 1);
+        Status lastStatus = userStatus.getStatuses().get(Math.max((userStatus.getStatuses().size() - 1), 0));
 
         Glide.with(context).load(lastStatus.getImageUrl()).into(holder.binding.image);
 

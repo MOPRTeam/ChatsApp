@@ -59,7 +59,7 @@ public class FriendActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
-                for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     User user = snapshot1.getValue(User.class);
                     if (!Objects.isNull(user.getUid()))
                         if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
@@ -67,6 +67,7 @@ public class FriendActivity extends AppCompatActivity {
                 }
 
                 friendsAdapter.notifyDataSetChanged();
+                binding.recyclerViewFriends.hideShimmerAdapter();
             }
 
             @Override
@@ -74,8 +75,6 @@ public class FriendActivity extends AppCompatActivity {
 
             }
         });
-
-        binding.recyclerViewFriends.hideShimmerAdapter();
 
         //Initial adapter and set adapter
         friendsAdapter = new FriendsAdapter(this, users, currentUser);

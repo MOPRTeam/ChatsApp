@@ -62,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
     MessagesAdapter adapter;
     ArrayList<Message> messages;
 
-    String senderRoom, receiverRoom;
+//    String senderRoom, receiverRoom;
 
     FirebaseDatabase database;
     FirebaseStorage storage;
@@ -132,18 +132,47 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        senderRoom = senderUid + receiverUid;
-        receiverRoom = receiverUid + senderUid;
+//        senderRoom = senderUid + receiverUid;
+//        receiverRoom = receiverUid + senderUid;
 
-        adapter = new MessagesAdapter(this, messages, senderRoom, receiverRoom);
+        adapter = new MessagesAdapter(this, messages, senderUid, receiverUid);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(adapter);
 
-        database.getReference().child("chats")
-                .child(senderRoom)
-                .child("messages")
+//        database.getReference().child("chats")
+//                .child(senderRoom)
+//                .child("messages")
+//                .addValueEventListener(new ValueEventListener() {
+//                    @SuppressLint("NotifyDataSetChanged")
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        messages.clear();
+//                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                            Message message = snapshot1.getValue(Message.class);
+//                            message.setMessageId(snapshot1.getKey());
+//                            messages.add(message);
+//                        }
+//
+//                        adapter = new MessagesAdapter(ChatActivity.this, messages, senderRoom, receiverRoom);
+//                        LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
+//                        layoutManager.setStackFromEnd(true);
+//                        binding.recyclerView.setLayoutManager(layoutManager);
+//                        binding.recyclerView.setAdapter(adapter);
+////                        adapter.notifyDataSetChanged();
+//                        binding.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
+
+        database.getReference().child("chatMessages")
+                .child(senderUid)
+                .child(receiverUid)
                 .addValueEventListener(new ValueEventListener() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
@@ -155,7 +184,7 @@ public class ChatActivity extends AppCompatActivity {
                             messages.add(message);
                         }
 
-                        adapter = new MessagesAdapter(ChatActivity.this, messages, senderRoom, receiverRoom);
+                        adapter = new MessagesAdapter(ChatActivity.this, messages, senderUid, receiverUid);
                         LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
                         layoutManager.setStackFromEnd(true);
                         binding.recyclerView.setLayoutManager(layoutManager);
@@ -201,19 +230,19 @@ public class ChatActivity extends AppCompatActivity {
                 lastMsgObj.put("lastMsg", message.getMessage());
                 lastMsgObj.put("lastMsgTime", date.getTime());
 
-                database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
-                database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
+                database.getReference().child("chatLists").child(senderUid).child(receiverUid).updateChildren(lastMsgObj);
+                database.getReference().child("chatLists").child(receiverUid).child(senderUid).updateChildren(lastMsgObj);
 
-                database.getReference().child("chats")
-                        .child(senderRoom)
-                        .child("messages")
+                database.getReference().child("chatMessages")
+                        .child(senderUid)
+                        .child(receiverUid)
                         .child(randomKey)
                         .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        database.getReference().child("chats")
-                                .child(receiverRoom)
-                                .child("messages")
+                        database.getReference().child("chatMessages")
+                                .child(receiverUid)
+                                .child(senderUid)
                                 .child(randomKey)
                                 .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -336,7 +365,7 @@ public class ChatActivity extends AppCompatActivity {
                         if (data.getData() != null) {
                             Uri selectedImage = data.getData();
                             Calendar calendar = Calendar.getInstance();
-                            StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
+                            StorageReference reference = storage.getReference().child("chatMedias").child(calendar.getTimeInMillis() + "");
                             dialog.show();
                             reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -362,19 +391,19 @@ public class ChatActivity extends AppCompatActivity {
                                                 lastMsgObj.put("lastMsg", message.getMessage());
                                                 lastMsgObj.put("lastMsgTime", date.getTime());
 
-                                                database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
-                                                database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
+                                                database.getReference().child("chatLists").child(senderUid).child(receiverUid).updateChildren(lastMsgObj);
+                                                database.getReference().child("chatLists").child(receiverUid).child(senderUid).updateChildren(lastMsgObj);
 
-                                                database.getReference().child("chats")
-                                                        .child(senderRoom)
-                                                        .child("messages")
+                                                database.getReference().child("chatMessages")
+                                                        .child(senderUid)
+                                                        .child(receiverUid)
                                                         .child(randomKey)
                                                         .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
-                                                        database.getReference().child("chats")
-                                                                .child(receiverRoom)
-                                                                .child("messages")
+                                                        database.getReference().child("chatMessages")
+                                                                .child(receiverUid)
+                                                                .child(senderUid)
                                                                 .child(randomKey)
                                                                 .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
@@ -402,7 +431,7 @@ public class ChatActivity extends AppCompatActivity {
                         bmp.recycle();
 
                         Calendar calendar = Calendar.getInstance();
-                        StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
+                        StorageReference reference = storage.getReference().child("chatMedias").child(calendar.getTimeInMillis() + "");
                         dialog.show();
                         reference.putBytes(byteArray).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -428,19 +457,19 @@ public class ChatActivity extends AppCompatActivity {
                                             lastMsgObj.put("lastMsg", message.getMessage());
                                             lastMsgObj.put("lastMsgTime", date.getTime());
 
-                                            database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
-                                            database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
+                                            database.getReference().child("chatLists").child(senderUid).child(receiverUid).updateChildren(lastMsgObj);
+                                            database.getReference().child("chatLists").child(receiverUid).child(senderUid).updateChildren(lastMsgObj);
 
-                                            database.getReference().child("chats")
-                                                    .child(senderRoom)
-                                                    .child("messages")
+                                            database.getReference().child("chatMessages")
+                                                    .child(senderUid)
+                                                    .child(receiverUid)
                                                     .child(randomKey)
                                                     .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
-                                                    database.getReference().child("chats")
-                                                            .child(receiverRoom)
-                                                            .child("messages")
+                                                    database.getReference().child("chatMessages")
+                                                            .child(receiverUid)
+                                                            .child(senderUid)
                                                             .child(randomKey)
                                                             .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override

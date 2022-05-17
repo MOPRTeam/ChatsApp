@@ -27,7 +27,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_centerInParent="true"
-            app:portion_color="@color/purple_500"
+            app:portion_color="@color/colorPrimary"
             app:portion_spacing="4dp"
             app:portion_width="4dp"
             app:portions_count="10" />

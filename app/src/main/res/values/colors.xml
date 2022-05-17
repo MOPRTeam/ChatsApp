@@ -17,7 +17,7 @@
     <color name="red">#e83786</color>
     <color name="brown">#c8855b</color>
 
-    <item name="cardBackground" type="color">#f6f6f6</item>
+    <color name="cardBackground">#F6F6F6</color>
     <color name="textColor">#999DA4</color>
     <color name="shimmerColor">#B5BAC3</color>
 </resources>

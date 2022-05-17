@@ -32,14 +32,14 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     final int ITEM_SENT = 1;
     final int ITEM_RECEIVE = 2;
 
-    String senderRoom;
-    String receiverRoom;
+    String senderUid;
+    String receiverUid;
 
-    public MessagesAdapter(Context context, ArrayList<Message> messages, String senderRoom, String receiverRoom) {
+    public MessagesAdapter(Context context, ArrayList<Message> messages, String senderUid, String receiverUid) {
         this.context = context;
         this.messages = messages;
-        this.senderRoom = senderRoom;
-        this.receiverRoom = receiverRoom;
+        this.senderUid = senderUid;
+        this.receiverUid = receiverUid;
     }
 
     @NonNull
@@ -105,14 +105,16 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             FirebaseDatabase.getInstance()
                     .getReference()
                     .child("chats")
-                    .child(senderRoom)
+                    .child(senderUid)
+                    .child(receiverUid)
                     .child("messages")
                     .child(message.getMessageId()).setValue(message);
 
             FirebaseDatabase.getInstance()
                     .getReference()
                     .child("chats")
-                    .child(receiverRoom)
+                    .child(receiverUid)
+                    .child(senderUid)
                     .child("messages")
                     .child(message.getMessageId()).setValue(message);
 
@@ -173,13 +175,15 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                             message.setFeeling(-1);
                             FirebaseDatabase.getInstance().getReference()
                                     .child("chats")
-                                    .child(senderRoom)
+                                    .child(senderUid)
+                                    .child(receiverUid)
                                     .child("messages")
                                     .child(message.getMessageId()).setValue(message);
 
                             FirebaseDatabase.getInstance().getReference()
                                     .child("chats")
-                                    .child(receiverRoom)
+                                    .child(receiverUid)
+                                    .child(senderUid)
                                     .child("messages")
                                     .child(message.getMessageId()).setValue(message);
                             dialog.dismiss();
@@ -191,7 +195,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference()
                                     .child("chats")
-                                    .child(senderRoom)
+                                    .child(senderUid)
+                                    .child(receiverUid)
                                     .child("messages")
                                     .child(message.getMessageId()).setValue(null);
                             dialog.dismiss();
@@ -264,7 +269,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference()
                                     .child("chats")
-                                    .child(senderRoom)
+                                    .child(senderUid)
+                                    .child(receiverUid)
                                     .child("messages")
                                     .child(message.getMessageId()).setValue(null);
                             dialog.dismiss();

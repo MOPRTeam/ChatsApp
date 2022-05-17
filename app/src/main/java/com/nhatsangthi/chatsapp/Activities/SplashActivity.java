@@ -29,16 +29,13 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 if (auth.getCurrentUser() != null) {
                     startActivity(new Intent(SplashActivity.this, DashBoard.class));
                     finish();
                 } else {
                     startActivity(new Intent(SplashActivity.this, PhoneNumberActivity.class));
                     finish();
-
                 }
-
             }
         }, 3000);
     }

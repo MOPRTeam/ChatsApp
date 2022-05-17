@@ -33,7 +33,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="20dp"
-                android:text="User Name"
+                android:text=""
                 android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
                 android:textStyle="bold" />
@@ -52,7 +52,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
-                    android:text="Last Message"
+                    android:text=""
                     android:textColor="@color/textColor"
                     android:textSize="13dp"
                     android:textStyle="bold" />
