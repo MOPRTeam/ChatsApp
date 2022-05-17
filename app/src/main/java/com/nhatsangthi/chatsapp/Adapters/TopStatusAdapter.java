@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.nhatsangthi.chatsapp.Activities.DashBoard;
-import com.nhatsangthi.chatsapp.Activities.MainActivity;
 import com.nhatsangthi.chatsapp.Models.Status;
 import com.nhatsangthi.chatsapp.Models.UserStatus;
 import com.nhatsangthi.chatsapp.R;
@@ -43,7 +42,7 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
     public void onBindViewHolder(@NonNull TopStatusViewHolder holder, int position) {
         UserStatus userStatus = userStatuses.get(position);
 
-        Status lastStatus = userStatus.getStatuses().get(Math.max((userStatus.getStatuses().size() - 1), 0));
+        Status lastStatus = userStatus.getStatuses().get(userStatus.getStatuses().size() - 1);
 
         Glide.with(context).load(lastStatus.getImageUrl()).into(holder.binding.image);
 

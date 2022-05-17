@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,9 +39,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nhatsangthi.chatsapp.Activities.FriendActivity;
 import com.nhatsangthi.chatsapp.Adapters.TopStatusAdapter;
-import com.nhatsangthi.chatsapp.Adapters.UsersAdapter;
+import com.nhatsangthi.chatsapp.Adapters.ChatListAdapter;
 import com.nhatsangthi.chatsapp.Constants.AllConstants;
-import com.nhatsangthi.chatsapp.Models.Message;
 import com.nhatsangthi.chatsapp.Models.Status;
 import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.Models.UserStatus;
@@ -50,9 +48,7 @@ import com.nhatsangthi.chatsapp.R;
 import com.nhatsangthi.chatsapp.Utils.Util;
 import com.nhatsangthi.chatsapp.databinding.FragmentMainBinding;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,7 +62,7 @@ public class MainFragment extends Fragment {
     ArrayList<User> users;
     ArrayList<User> listFriends;
     ArrayList<String> listFriendIds;
-    UsersAdapter usersAdapter;
+    ChatListAdapter chatListAdapter;
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
@@ -123,7 +119,7 @@ public class MainFragment extends Fragment {
                     }
                 });
 
-        usersAdapter = new UsersAdapter(getActivity(), listFriends);
+        chatListAdapter = new ChatListAdapter(getActivity(), listFriends);
         statusAdapter = new TopStatusAdapter(getActivity(), userStatuses);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -131,7 +127,7 @@ public class MainFragment extends Fragment {
         binding.statusList.setLayoutManager(layoutManager);
         binding.statusList.setAdapter(statusAdapter);
 
-        binding.recyclerView.setAdapter(usersAdapter);
+        binding.recyclerView.setAdapter(chatListAdapter);
 
         binding.statusList.showShimmerAdapter();
         binding.recyclerView.showShimmerAdapter();
@@ -178,7 +174,7 @@ public class MainFragment extends Fragment {
 
                                         showStoriesOfFriend(listFriendIds);
 
-                                        usersAdapter.notifyDataSetChanged();
+                                        chatListAdapter.notifyDataSetChanged();
 
                                         binding.statusArea.setVisibility(View.VISIBLE);
                                         binding.statusArea.scheduleLayoutAnimation();
@@ -193,7 +189,7 @@ public class MainFragment extends Fragment {
                             });
                         }
 
-                        usersAdapter.notifyDataSetChanged();
+                        chatListAdapter.notifyDataSetChanged();
 
                         binding.statusList.hideShimmerAdapter();
                         binding.recyclerView.hideShimmerAdapter();
@@ -207,13 +203,6 @@ public class MainFragment extends Fragment {
 
                     }
                 });
-
-        if (listFriends.isEmpty() || userStatuses.isEmpty()) {
-            binding.view2.setVisibility(View.GONE);
-        }
-        else {
-            binding.view2.setVisibility(View.VISIBLE);
-        }
 
         binding.imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -360,8 +349,7 @@ public class MainFragment extends Fragment {
 //        }
 //    }
 
-    private void showStoriesOfFriend(ArrayList<String> listIDFriend)
-    {
+    void showStoriesOfFriend(ArrayList<String> listIDFriend) {
         database.getReference().child("stories").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

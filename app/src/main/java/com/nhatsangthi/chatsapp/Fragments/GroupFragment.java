@@ -16,26 +16,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.nhatsangthi.chatsapp.Adapters.GroupAdapter;
+import com.nhatsangthi.chatsapp.Activities.CreateGroupActivity;
+import com.nhatsangthi.chatsapp.Adapters.GroupChatListAdapter;
 import com.nhatsangthi.chatsapp.Models.Group;
 import com.nhatsangthi.chatsapp.R;
 import com.nhatsangthi.chatsapp.Utils.Util;
 import com.nhatsangthi.chatsapp.databinding.FragmentGroupBinding;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GroupFragment extends Fragment {
 
     private FragmentGroupBinding binding;
     private Util util;
     private FirebaseAuth firebaseAuth;
-    private GroupAdapter groupAdapter;
+    private GroupChatListAdapter groupChatListAdapter;
     private ArrayList<Group> groups;
 
     @Override
@@ -53,7 +48,7 @@ public class GroupFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Groups");
 
         groups = new ArrayList<>();
-        groupAdapter = new GroupAdapter();
+//        groupChatAdapter = new GroupChatAdapter();
 
         binding.groupChatRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.groupChatRecyclerView.setHasFixedSize(false);
@@ -137,8 +132,8 @@ public class GroupFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.btnCreateGroup) {
-//            Intent intent = new Intent(requireContext(), CreateGroupActivity.class);
-//            startActivity(intent);
+            Intent intent = new Intent(requireContext(), CreateGroupActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

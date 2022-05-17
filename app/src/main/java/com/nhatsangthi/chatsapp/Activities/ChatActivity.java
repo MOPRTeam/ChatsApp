@@ -132,43 +132,11 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-//        senderRoom = senderUid + receiverUid;
-//        receiverRoom = receiverUid + senderUid;
-
         adapter = new MessagesAdapter(this, messages, senderUid, receiverUid);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(adapter);
-
-//        database.getReference().child("chats")
-//                .child(senderRoom)
-//                .child("messages")
-//                .addValueEventListener(new ValueEventListener() {
-//                    @SuppressLint("NotifyDataSetChanged")
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        messages.clear();
-//                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                            Message message = snapshot1.getValue(Message.class);
-//                            message.setMessageId(snapshot1.getKey());
-//                            messages.add(message);
-//                        }
-//
-//                        adapter = new MessagesAdapter(ChatActivity.this, messages, senderRoom, receiverRoom);
-//                        LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
-//                        layoutManager.setStackFromEnd(true);
-//                        binding.recyclerView.setLayoutManager(layoutManager);
-//                        binding.recyclerView.setAdapter(adapter);
-////                        adapter.notifyDataSetChanged();
-//                        binding.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
 
         database.getReference().child("chatMessages")
                 .child(senderUid)

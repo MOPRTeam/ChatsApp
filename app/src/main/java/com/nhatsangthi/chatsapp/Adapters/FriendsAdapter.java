@@ -22,7 +22,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -81,10 +80,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
                         //Disable deny button
                         holder.binding.deny.setVisibility(View.GONE);
                         if (snapshot.exists()) {
-                            //Lưu ý: Hàm onComplete bị ghi đè sau khi thực hiện xong event, nên ta đổi ngược lại các thông báo(Toast) trong hàm onComplete
                             String friendState = snapshot.getValue(String.class);
                             if (friendState.equals(FriendState.FRIEND.name())) {
-                                holder.binding.addRemove.setText("Unfriend");
+                                holder.binding.addRemove.setText("UNFRIEND");
                                 holder.binding.addRemove.setBackgroundColor(context.getResources().getColor(R.color.semiRed));
                                 holder.binding.addRemove.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -164,10 +162,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
                         @Override
                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                             if (Objects.isNull(error)) {
-                                sendNotification(currentUser.getName(), "send you a friend request !", friend.getToken());
+                                sendNotification(currentUser.getName(), "send you a friend request!", friend.getToken());
                                 Toast.makeText(context, "Send friend request to " + friend.getName() + " successfully!", Toast.LENGTH_LONG).show();
                             } else {
-                                Log.e("Request friend error: ",error.getMessage());
+                                Log.e("Request friend error: ", error.getMessage());
                                 Log.e("Restore: ","Remove request friend from current User");
                                 databaseReference
                                         .child("friends").child(friend.getUid()).child(currentUser.getUid()).removeValue();
@@ -301,12 +299,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
                 if (stringSearch.isEmpty()) {
                     friends = listFriendOrigin;
                 } else {
-                    ArrayList<User> searchFriends=new ArrayList<>();
+                    ArrayList<User> searchFriends = new ArrayList<>();
                     for (User user : listFriendOrigin) {
                         if (user.getName().toLowerCase().contains(stringSearch) || user.getPhoneNumber().contains(stringSearch))
                             searchFriends.add(user);
                     }
-                    friends=searchFriends;
+                    friends = searchFriends;
                 }
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = friends;
@@ -315,7 +313,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                friends= (ArrayList<User>) filterResults.values;
+                friends = (ArrayList<User>) filterResults.values;
                 notifyDataSetChanged();
             }
         };

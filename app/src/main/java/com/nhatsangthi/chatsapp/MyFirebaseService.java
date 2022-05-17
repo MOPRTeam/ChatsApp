@@ -15,7 +15,6 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.nhatsangthi.chatsapp.Activities.DashBoard;
-import com.nhatsangthi.chatsapp.Activities.MainActivity;
 
 public class MyFirebaseService extends FirebaseMessagingService {
     @Override

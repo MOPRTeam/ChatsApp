@@ -1,6 +1,5 @@
 package com.nhatsangthi.chatsapp.Constants;
 
-import com.nhatsangthi.chatsapp.Models.User;
 
 public interface AllConstants {
     int REQUEST_GET_CONTENT = 101;

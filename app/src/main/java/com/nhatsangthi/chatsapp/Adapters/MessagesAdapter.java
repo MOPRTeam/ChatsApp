@@ -104,18 +104,16 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
             FirebaseDatabase.getInstance()
                     .getReference()
-                    .child("chats")
+                    .child("chatMessages")
                     .child(senderUid)
                     .child(receiverUid)
-                    .child("messages")
                     .child(message.getMessageId()).setValue(message);
 
             FirebaseDatabase.getInstance()
                     .getReference()
-                    .child("chats")
+                    .child("chatMessages")
                     .child(receiverUid)
                     .child(senderUid)
-                    .child("messages")
                     .child(message.getMessageId()).setValue(message);
 
             return true; // true is closing popup, false is requesting a new selection
@@ -174,17 +172,15 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                             message.setMessage("This message is removed.");
                             message.setFeeling(-1);
                             FirebaseDatabase.getInstance().getReference()
-                                    .child("chats")
+                                    .child("chatMessages")
                                     .child(senderUid)
                                     .child(receiverUid)
-                                    .child("messages")
                                     .child(message.getMessageId()).setValue(message);
 
                             FirebaseDatabase.getInstance().getReference()
-                                    .child("chats")
+                                    .child("chatMessages")
                                     .child(receiverUid)
                                     .child(senderUid)
-                                    .child("messages")
                                     .child(message.getMessageId()).setValue(message);
                             dialog.dismiss();
                         }
@@ -194,10 +190,9 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference()
-                                    .child("chats")
+                                    .child("chatMessages")
                                     .child(senderUid)
                                     .child(receiverUid)
-                                    .child("messages")
                                     .child(message.getMessageId()).setValue(null);
                             dialog.dismiss();
                         }
@@ -268,10 +263,9 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference()
-                                    .child("chats")
+                                    .child("chatMessages")
                                     .child(senderUid)
                                     .child(receiverUid)
-                                    .child("messages")
                                     .child(message.getMessageId()).setValue(null);
                             dialog.dismiss();
                         }

@@ -17,8 +17,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatsApp"
-        tools:replace="android:theme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:theme">
+        <activity
+            android:name=".Activities.CreateGroupActivity"
+            android:exported="false" />
         <activity
             android:name=".Activities.DashBoard"
             android:exported="false" />
@@ -58,19 +61,13 @@
             android:name=".Activities.PhoneNumberActivity"
             android:exported="true"
             android:windowSoftInputMode="stateVisible" />
-        <activity
-            android:name=".Activities.MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_chat" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
