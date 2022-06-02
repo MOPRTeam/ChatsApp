@@ -306,49 +306,6 @@ public class MainFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-//    void showChatList() {
-//        listFriends.clear();
-//        if (listFriendIds.isEmpty()) {
-//            Toast.makeText(getActivity(), "No Friends", Toast.LENGTH_SHORT).show();
-//        } else {
-//            database.getReference().child("users").addValueEventListener(new ValueEventListener() {
-//                @RequiresApi(api = Build.VERSION_CODES.N)
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    users.clear();
-//                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                        User user = snapshot1.getValue(User.class);
-//                        if (!Objects.isNull(user.getUid()) && listFriendIds.contains(user.getUid())) {
-//                            users.add(user);
-//                        }
-//                    }
-//
-//                    if (users.size() > 0) {
-//                        for (String friendId : listFriendIds) {
-//                            for (User user : users) {
-//                                if (friendId.equals(user.getUid())) {
-//                                    listFriends.add(user);
-//                                }
-//                            }
-//                        }
-////                        for (User user : users) {
-////                            if (listFriendIds.contains(user.getUid()))
-////                                listFriends.add(user);
-////                        }
-//                        showStoriesOfFriend(listFriendIds);
-////                        sortUsers();
-//                        usersAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//        }
-//    }
-
     void showStoriesOfFriend(ArrayList<String> listIDFriend) {
         database.getReference().child("stories").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")

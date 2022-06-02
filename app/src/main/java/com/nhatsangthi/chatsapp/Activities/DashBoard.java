@@ -19,6 +19,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.nhatsangthi.chatsapp.Constants.AllConstants;
 import com.nhatsangthi.chatsapp.Fragments.GroupFragment;
 import com.nhatsangthi.chatsapp.Fragments.MainFragment;
+import com.nhatsangthi.chatsapp.Fragments.ProfileFragment;
 import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.R;
 import com.nhatsangthi.chatsapp.Utils.Util;
@@ -28,6 +29,7 @@ public class DashBoard extends AppCompatActivity {
     private ChipNavigationBar navigationBar;
     Fragment mainFragment = new MainFragment();
     Fragment groupFragment = new GroupFragment();
+    Fragment profileFragment = new ProfileFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class DashBoard extends AppCompatActivity {
                         replaceFragment(groupFragment);
                         break;
                     case R.id.profile:
-//                        fragment = new ProfileFragment();
+                        replaceFragment(profileFragment);
                 }
             }
         });
@@ -77,5 +79,9 @@ public class DashBoard extends AppCompatActivity {
         fragmentTransaction.replace(R.id.dashboardContainer, fragment);
         fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
+    }
+
+    public void onBackPressed() {
+        finish();
     }
 }

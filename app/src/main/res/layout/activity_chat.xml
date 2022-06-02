@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:theme="@style/Theme.ChatsApp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:tint="@color/white"
+                app:tint="@color/white"
                 app:srcCompat="@drawable/ic_left_arrow" />
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
-                android:gravity="center"
+                android:gravity="left|center_vertical"
                 android:orientation="vertical">
 
                 <TextView
@@ -58,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/status"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Online"
@@ -111,7 +111,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginRight="12dp"
-                android:tint="#676767"
+                app:tint="#676767"
                 app:srcCompat="@drawable/ic_attachment" />
 
             <ImageView
@@ -119,7 +119,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginRight="12dp"
-                android:tint="#676767"
+                app:tint="#676767"
                 app:srcCompat="@drawable/ic_camera" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -131,7 +131,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/circle_green"
         android:padding="10dp"
-        android:tint="@color/white"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView"

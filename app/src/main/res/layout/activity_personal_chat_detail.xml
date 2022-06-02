@@ -65,10 +65,10 @@
                             android:background="@android:color/transparent"
                             android:text="Audio"
                             android:textAllCaps="false"
-                            android:textColor="@color/green"
+                            android:textColor="@color/colorPrimary"
                             app:icon="@drawable/ic_call"
                             app:iconGravity="top"
-                            app:iconTint="@color/green" />
+                            app:iconTint="@color/colorPrimary" />
 
                         <Button
                             android:id="@+id/videoCall"
@@ -78,10 +78,10 @@
                             android:background="@android:color/transparent"
                             android:text="Video"
                             android:textAllCaps="false"
-                            android:textColor="@color/green"
+                            android:textColor="@color/colorPrimary"
                             app:icon="@drawable/ic_video"
                             app:iconGravity="top"
-                            app:iconTint="@color/green" />
+                            app:iconTint="@color/colorPrimary" />
 
                         <Button
                             android:id="@+id/save"
@@ -91,10 +91,10 @@
                             android:background="@android:color/transparent"
                             android:text="Save"
                             android:textAllCaps="false"
-                            android:textColor="@color/green"
+                            android:textColor="@color/colorPrimary"
                             app:icon="@drawable/ic_person_add"
                             app:iconGravity="top"
-                            app:iconTint="@color/green" />
+                            app:iconTint="@color/colorPrimary" />
 
                         <Button
                             android:id="@+id/search"
@@ -104,10 +104,10 @@
                             android:background="@android:color/transparent"
                             android:text="Search"
                             android:textAllCaps="false"
-                            android:textColor="@color/green"
+                            android:textColor="@color/colorPrimary"
                             app:icon="@drawable/ic_search"
                             app:iconGravity="top"
-                            app:iconTint="@color/green" />
+                            app:iconTint="@color/colorPrimary" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -157,9 +157,10 @@
                         android:paddingRight="10dp"
                         android:text="Mute notifications"
                         android:textSize="16sp"
-                        android:thumbTint="@color/green"
+                        android:thumbTint="@color/colorPrimary"
                         tools:checked="true"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        tools:ignore="TouchTargetSizeCheck"
+                        android:drawableTint="@android:color/darker_gray"/>
 
                     <TextView
                         android:id="@+id/customNotification"
@@ -176,7 +177,8 @@
                         android:text="Custom notifications"
                         android:textAllCaps="false"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:drawableTint="@android:color/darker_gray"/>
 
                     <TextView
                         android:id="@+id/mediaVisibility"
@@ -193,7 +195,8 @@
                         android:text="Media visibility"
                         android:textAllCaps="false"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:drawableTint="@android:color/darker_gray"/>
 
                 </LinearLayout>
 
