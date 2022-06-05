@@ -70,47 +70,32 @@ public class GroupInfoActivity extends AppCompatActivity {
         binding.collapsingToolbar.setTitle(currentGroup.getName());
 
         userList = new ArrayList<>();
+        for (GroupMember member : currentGroup.getMembers()) {
+            database.getReference().child("users").child(member.getId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
 
-        database.getReference("groupDetails").child(currentGroup.getId()).child("members")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<GroupMember> groupMembers = new ArrayList<>();
-                        for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
-                            GroupMember memberModel = snapshotTemp.getValue(GroupMember.class);
-                            groupMembers.add(memberModel);
+                            userList.add(user);
+                            memberAdapter.notifyDataSetChanged();
                         }
 
-                        currentGroup.setMembers(groupMembers);
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                        for (GroupMember member : currentGroup.getMembers()) {
-                            database.getReference().child("users").child(member.getId())
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            User user = snapshot.getValue(User.class);
-
-                                            userList.add(user);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
                         }
+                    });
 
-                        memberAdapter.notifyDataSetChanged();
-                    }
+            memberAdapter.notifyDataSetChanged();
+        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
+        memberAdapter = new GroupMemberAdapter(GroupInfoActivity.this, currentGroup, userList);
 
-
-
-
+        binding.memberRecyclerView.setLayoutManager(new LinearLayoutManager(GroupInfoActivity.this));
+        binding.memberRecyclerView.setNestedScrollingEnabled(false);
+        binding.memberRecyclerView.setAdapter(memberAdapter);
+        memberAdapter.notifyDataSetChanged();
 
         if (currentGroup.getAdminId().equals(FirebaseAuth.getInstance().getUid())) {
             binding.cardDeleteGroup.setVisibility(View.VISIBLE);

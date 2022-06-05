@@ -194,15 +194,15 @@ public class GroupChatActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.btnAddMember:
-//                Intent member = new Intent(this, AddMemberActivity.class);
-//                member.putExtra("group", currentGroup);
-//                startActivityForResult(member, 101);
+                Intent member = new Intent(this, AddGroupMemberActivity.class);
+                member.putExtra("group", currentGroup);
+                startActivity(member);
 
                 break;
             case R.id.btnGroupInfo:
                 Intent intent = new Intent(this, GroupInfoActivity.class);
                 intent.putExtra("group", currentGroup);
-                startActivityForResult(intent, 90);
+                startActivity(intent);
                 break;
             case R.id.btnExitGroup:
                 exitGroup();

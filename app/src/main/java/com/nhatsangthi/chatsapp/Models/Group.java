@@ -31,6 +31,8 @@ public class Group implements Parcelable {
         createdAt = in.readString();
         image = in.readString();
         name = in.readString();
+        members = in.createTypedArrayList(GroupMember.CREATOR);
+        groupLastMessage = in.readParcelable(GroupLastMessage.class.getClassLoader());
         isAdmin = in.readByte() != 0;
     }
 
@@ -115,7 +117,7 @@ public class Group implements Parcelable {
     }
 
     public void setIsAdmin(boolean isAdmin) {
-        isAdmin = isAdmin;
+        this.isAdmin = isAdmin;
     }
 
     @Override
@@ -131,6 +133,8 @@ public class Group implements Parcelable {
         parcel.writeString(createdAt);
         parcel.writeString(image);
         parcel.writeString(name);
+        parcel.writeTypedList(members);
+        parcel.writeParcelable(groupLastMessage, i);
         parcel.writeByte((byte) (isAdmin ? 1 : 0));
     }
 }
