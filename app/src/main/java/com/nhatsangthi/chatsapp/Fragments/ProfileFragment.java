@@ -126,7 +126,7 @@ public class ProfileFragment extends Fragment {
 
                 dialog.show();
                 if(selectedImage != null) {
-                    StorageReference reference = storage.getReference().child("Profiles").child(auth.getUid());
+                    StorageReference reference = storage.getReference().child("profiles").child(auth.getUid());
                     reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -200,7 +200,7 @@ public class ProfileFragment extends Fragment {
 
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 long time = new Date().getTime();
-                StorageReference reference = storage.getReference().child("Profiles").child(time+"");
+                StorageReference reference = storage.getReference().child("profiles").child(auth.getUid());
                 reference.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {

@@ -2,6 +2,7 @@ package com.nhatsangthi.chatsapp.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -140,18 +141,11 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 viewHolder.binding.feeling.setVisibility(View.GONE);
             }
 
-            viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
+            viewHolder.binding.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    popup.onTouch(view, motionEvent);
-                    return false;
-                }
-            });
-
-            viewHolder.binding.image.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    popup.onTouch(view, motionEvent);
+                public boolean onLongClick(View view) {
+                    popup.onTouch(view, MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+                            MotionEvent.ACTION_DOWN, view.getX(), view.getY(), 0));
                     return false;
                 }
             });
@@ -231,18 +225,11 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 viewHolder.binding.feeling.setVisibility(View.GONE);
             }
 
-            viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
+            viewHolder.binding.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    popup.onTouch(view, motionEvent);
-                    return false;
-                }
-            });
-
-            viewHolder.binding.image.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    popup.onTouch(view, motionEvent);
+                public boolean onLongClick(View view) {
+                    popup.onTouch(view, MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+                            MotionEvent.ACTION_DOWN, view.getX(), view.getY(), 0));
                     return false;
                 }
             });

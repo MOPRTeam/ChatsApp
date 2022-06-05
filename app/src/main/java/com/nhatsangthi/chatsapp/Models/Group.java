@@ -1,7 +1,11 @@
 package com.nhatsangthi.chatsapp.Models;
 
+import java.util.List;
+
 public class Group {
     private String id, adminId, adminName, createdAt, image, name;
+    private List<GroupMember> members;
+    private boolean isAdmin;
 
     public Group() {
     }

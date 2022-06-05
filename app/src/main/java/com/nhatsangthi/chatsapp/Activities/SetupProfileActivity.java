@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.nhatsangthi.chatsapp.Constants.AllConstants;
 import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.databinding.ActivitySetupProfileBinding;
 
@@ -52,7 +53,7 @@ public class SetupProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-                startActivityForResult(intent, 45);
+                startActivityForResult(intent, AllConstants.REQUEST_GET_CONTENT);
             }
         });
 

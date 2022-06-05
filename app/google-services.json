@@ -39,6 +39,14 @@
           }
         },
         {
+          "client_id": "729071821825-ujsvsjmeukb0s6h1ufnuqpnrbrusdp3r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nhatsangthi.chatsapp",
+            "certificate_hash": "8c0a92b9ee178c12eb61154e1db8579af73a6729"
+          }
+        },
+        {
           "client_id": "729071821825-5d3p2i6o0o2rs1mut5p7qtebiqae6r7v.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -92,8 +92,6 @@ public class ChatActivity extends AppCompatActivity {
         String profile = getIntent().getStringExtra("image");
         String token = getIntent().getStringExtra("token");
 
-//        Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
-
         binding.name.setText(name);
         Glide.with(ChatActivity.this)
                 .load(profile)
