@@ -74,7 +74,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentMainBinding.bind(inflater.inflate(R.layout.fragment_main, container, false));
+        binding = FragmentMainBinding.inflate(inflater, container, false);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("ChatsApp");
         setHasOptionsMenu(true);
@@ -103,7 +103,7 @@ public class MainFragment extends Fragment {
         userStatuses = new ArrayList<>();
 
         database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         currentUser = snapshot.getValue(User.class);

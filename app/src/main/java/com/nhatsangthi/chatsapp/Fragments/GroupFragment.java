@@ -1,5 +1,6 @@
 package com.nhatsangthi.chatsapp.Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,22 +17,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.nhatsangthi.chatsapp.Activities.CreateGroupActivity;
 import com.nhatsangthi.chatsapp.Adapters.GroupChatListAdapter;
 import com.nhatsangthi.chatsapp.Models.Group;
+import com.nhatsangthi.chatsapp.Models.GroupLastMessage;
+import com.nhatsangthi.chatsapp.Models.GroupMember;
+import com.nhatsangthi.chatsapp.Models.User;
 import com.nhatsangthi.chatsapp.R;
 import com.nhatsangthi.chatsapp.Utils.Util;
 import com.nhatsangthi.chatsapp.databinding.FragmentGroupBinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class GroupFragment extends Fragment {
 
     private FragmentGroupBinding binding;
     private Util util;
     private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase database;
+    private ArrayList<Group> groupList;
     private GroupChatListAdapter groupChatListAdapter;
-    private ArrayList<Group> groups;
+    private User currentUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,70 +56,114 @@ public class GroupFragment extends Fragment {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         binding = FragmentGroupBinding.inflate(inflater, container, false);
-        util = new Util();
-        firebaseAuth = FirebaseAuth.getInstance();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Groups");
 
-        groups = new ArrayList<>();
-//        groupChatAdapter = new GroupChatAdapter();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Groups");
+        util = new Util();
+
+        groupList = new ArrayList<>();
+        groupChatListAdapter = new GroupChatListAdapter(getActivity(), groupList);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+
+        currentUser = new User();
+        database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        currentUser = snapshot.getValue(User.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
 
         binding.groupChatRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.groupChatRecyclerView.setHasFixedSize(false);
 
-//        binding.groupChatRecyclerView.setAdapter(groupAdapter);
-//        groupAdapter.setGroup(groups);
+        binding.groupChatRecyclerView.setAdapter(groupChatListAdapter);
+        binding.groupChatRecyclerView.showShimmerAdapter();
+
+//        database.getReference().child("groupDetails").orderByChild("lastMsgTime")
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        groupList.clear();
+//                        for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
+//                            groupList.add(snapshotTemp.getValue(Group.class));
+//                        }
 //
-//        getGroupList();
+//                        Collections.reverse(groupList);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
+
+        getGroupList();
 
         return binding.getRoot();
     }
 
     private void getGroupList() {
 
-//        Query query = FirebaseDatabase.getInstance().getReference("Group Detail");
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (snapshot.exists()) {
-//
-//                    groups.clear();
-//
-//                    for (DataSnapshot ds : snapshot.getChildren()) {
-//                        if (ds.child("Members").child(firebaseAuth.getUid()).exists()) {
-//                            GroupModel groupModel = ds.getValue(GroupModel.class);
-//                            DataSnapshot dataSnapshot = ds.child("Members");
-//                            List<GroupMemberModel> memberModelList = new ArrayList<>();
-//                            GroupLastMessageModel lastMessageModel = ds.child("lastMessageModel").getValue(GroupLastMessageModel.class);
-//                            if (lastMessageModel != null) {
-//                                lastMessageModel.date = Util.getTimeAgo(Long.parseLong(lastMessageModel.date));
-//                                groupModel.lastMessageModel = lastMessageModel;
-//                            }
-//
-//                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-//
-//                                GroupMemberModel memberModel = data.getValue(GroupMemberModel.class);
-//                                memberModelList.add(memberModel);
-//                            }
-//
-//                            groupModel.isAdmin = ds.child("Members").child(firebaseAuth.getUid()).child("role")
-//                                    .getValue().toString().equals("admin");
-//
-//                            groupModel.members = memberModelList;
-//                            groups.add(groupModel);
-//
-//                        }
-//                    }
-//
-//                    groupAdapter.setGroupModels(groups);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+        database.getReference().child("groupDetails")
+                .addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    groupList.clear();
+
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (ds.child("members").child(firebaseAuth.getUid()).exists()) {
+                            HashMap<String, Object> hashMap = (HashMap<String, Object>) ds.getValue();
+
+                            Group groupModel = new Group();
+                            groupModel.setAdminName((String) hashMap.get("adminName"));
+                            groupModel.setCreatedAt((String) hashMap.get("createdAt"));
+                            groupModel.setImage((String) hashMap.get("image"));
+                            groupModel.setAdminId((String) hashMap.get("adminId"));
+                            groupModel.setName((String) hashMap.get("name"));
+                            groupModel.setId((String) hashMap.get("id"));
+                            groupModel.setIsAdmin((boolean) hashMap.get("isAdmin"));
+
+                            GroupLastMessage lastMessageModel = ds.child("groupLastMessage").getValue(GroupLastMessage.class);
+                            groupModel.setGroupLastMessage(lastMessageModel);
+
+                            DataSnapshot dataSnapshot = ds.child("members");
+                            List<GroupMember> memberModelList = new ArrayList<>();
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                GroupMember memberModel = data.getValue(GroupMember.class);
+                                memberModelList.add(memberModel);
+                            }
+
+                            groupModel.setIsAdmin(ds.child("members").child(firebaseAuth.getUid()).child("role")
+                                    .getValue().toString().equals("admin"));
+
+                            groupModel.setMembers(memberModelList);
+                            groupList.add(groupModel);
+                        }
+                    }
+
+                    groupChatListAdapter.notifyDataSetChanged();
+                    binding.groupChatRecyclerView.hideShimmerAdapter();
+                    binding.groupChatRecyclerView.scheduleLayoutAnimation();
+                }
+
+                groupChatListAdapter.notifyDataSetChanged();
+                binding.groupChatRecyclerView.hideShimmerAdapter();
+                binding.groupChatRecyclerView.scheduleLayoutAnimation();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
@@ -133,6 +190,8 @@ public class GroupFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.btnCreateGroup) {
             Intent intent = new Intent(requireContext(), CreateGroupActivity.class);
+            intent.putExtra("uid", currentUser.getUid());
+            intent.putExtra("name", currentUser.getName());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

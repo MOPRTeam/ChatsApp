@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,8 +20,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nhatsangthi.chatsapp.Constants.AllConstants;
+import com.nhatsangthi.chatsapp.Models.Group;
+import com.nhatsangthi.chatsapp.Models.GroupLastMessage;
+import com.nhatsangthi.chatsapp.Models.GroupMember;
 import com.nhatsangthi.chatsapp.Models.User;
-import com.nhatsangthi.chatsapp.databinding.ActivityChatBinding;
 import com.nhatsangthi.chatsapp.databinding.ActivityCreateGroupBinding;
 
 public class CreateGroupActivity extends AppCompatActivity {
@@ -32,6 +33,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseStorage storage;
     Uri selectedImage;
+    User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +44,16 @@ public class CreateGroupActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Create Group");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        currentUser = new User();
+        currentUser.setUid(getIntent().getStringExtra("uid"));
+        currentUser.setName(getIntent().getStringExtra("name"));
+
         dialog = new ProgressDialog(this);
         dialog.setMessage("Creating group...");
         dialog.setCancelable(false);
 
         database = FirebaseDatabase.getInstance();
+        storage = FirebaseStorage.getInstance();
 
         binding.imgGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,55 +101,55 @@ public class CreateGroupActivity extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
                                 String imageUrl = uri.toString();
 
-                                String uid = auth.getUid();
-                                String phone = auth.getCurrentUser().getPhoneNumber();
-                                String name = binding.nameBox.getText().toString();
+                                Group group = new Group(groupId, currentUser.getUid(), currentUser.getName(),
+                                        String.valueOf(System.currentTimeMillis()), imageUrl, groupName, false);
 
-                                User user = new User(uid, name, phone, imageUrl);
+                                group.setGroupLastMessage(new GroupLastMessage("Tap to chat",
+                                        currentUser.getUid(),
+                                        System.currentTimeMillis()));
 
-                                database.getReference()
-                                        .child("users")
-                                        .child(uid)
-                                        .setValue(user)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                dialog.dismiss();
-                                                Intent intent = new Intent(SetupProfileActivity.this, DashBoard.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
+                                ref.child(groupId).setValue(group).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        dialog.dismiss();
+                                        Intent intent = new Intent(CreateGroupActivity.this, DashBoard.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+
+                                GroupMember groupMember = new GroupMember(currentUser.getUid(), "admin");
+                                database.getReference("groupDetails")
+                                        .child(groupId).child("members").child(currentUser.getUid())
+                                        .setValue(groupMember);
                             }
                         });
                     }
                 }
             });
         } else {
-            String uid = auth.getUid();
-            String phone = auth.getCurrentUser().getPhoneNumber();
+            Group group = new Group(groupId, currentUser.getUid(), currentUser.getName(),
+                    String.valueOf(System.currentTimeMillis()), "No Image", groupName, false);
 
-            User user = new User(uid, name, phone, "No Image");
+            group.setGroupLastMessage(new GroupLastMessage("Tap to chat",
+                    currentUser.getUid(),
+                    System.currentTimeMillis()));
 
-            database.getReference()
-                    .child("users")
-                    .child(uid)
-                    .setValue(user)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(SetupProfileActivity.this, DashBoard.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
+            ref.child(groupId).setValue(group).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    dialog.dismiss();
+                    Intent intent = new Intent(CreateGroupActivity.this, DashBoard.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+            GroupMember groupMember = new GroupMember(currentUser.getUid(), "admin");
+            database.getReference("groupDetails")
+                    .child(groupId).child("members").child(currentUser.getUid())
+                    .setValue(groupMember);
         }
-
-        DatabaseReference ref = database.getReference().child("groupDetails");
-        String groupId = ref.push().getKey();
-        storage.getReference().child("groupProfiles").child(groupId)
-                .
     }
 
     @Override

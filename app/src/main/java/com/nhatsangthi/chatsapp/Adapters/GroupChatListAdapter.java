@@ -1,6 +1,8 @@
 package com.nhatsangthi.chatsapp.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +10,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.nhatsangthi.chatsapp.Activities.ChatActivity;
+import com.nhatsangthi.chatsapp.Activities.GroupChatActivity;
 import com.nhatsangthi.chatsapp.Models.Group;
 import com.nhatsangthi.chatsapp.R;
+import com.nhatsangthi.chatsapp.Utils.Util;
 import com.nhatsangthi.chatsapp.databinding.ChatItemLayoutBinding;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class GroupChatListAdapter extends RecyclerView.Adapter<GroupChatListAdapter.GroupChatListViewHolder> {
 
@@ -26,15 +38,36 @@ public class GroupChatListAdapter extends RecyclerView.Adapter<GroupChatListAdap
 
     @NonNull
     @Override
-    public GroupChatListAdapter.GroupChatListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GroupChatListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.chat_item_layout, parent, false);
 
-        return new GroupChatListAdapter.GroupChatListViewHolder(view);
+        return new GroupChatListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GroupChatListAdapter.GroupChatListViewHolder holder, int position) {
+        Group group = groupList.get(position);
 
+        String lastMsg = group.getGroupLastMessage().getLastMsg();
+        long time = group.getGroupLastMessage().getLastMsgTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+
+        holder.binding.lastMsg.setText(Util.mySubString(lastMsg, 0, 30));
+        holder.binding.msgTime.setText(dateFormat.format(new Date(time)));
+
+        holder.binding.username.setText(group.getName());
+        Glide.with(context).load(group.getImage())
+                .placeholder(R.drawable.group_avatar)
+                .into(holder.binding.profile);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, GroupChatActivity.class);
+                intent.putExtra("group", group);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -51,82 +84,3 @@ public class GroupChatListAdapter extends RecyclerView.Adapter<GroupChatListAdap
         }
     }
 }
-
-//public class GroupChatAdapter extends RecyclerView.Adapter<GroupChatAdapter.UsersViewHolder> {
-//
-//    Context context;
-//    ArrayList<User> originListUser;
-//
-//    public ChatListAdapter(Context context, ArrayList<User> users) {
-//        this.context = context;
-//        this.originListUser = users;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(context).inflate(R.layout.chat_item_layout, parent, false);
-//
-//        return new UsersViewHolder(view);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull UsersViewHolder holder, int position) {
-//        User user = originListUser.get(position);
-//        String senderId = FirebaseAuth.getInstance().getUid();
-//
-//        FirebaseDatabase.getInstance().getReference()
-//                .child("chatLists")
-//                .child(senderId)
-//                .child(user.getUid())
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        if(snapshot.exists()) {
-//                            String lastMsg = snapshot.child("lastMsg").getValue(String.class);
-//                            long time = snapshot.child("lastMsgTime").getValue(Long.class);
-//                            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-//                            holder.binding.msgTime.setText(dateFormat.format(new Date(time)));
-//                            holder.binding.lastMsg.setText(Util.mySubString(lastMsg, 0, 30));
-//                        } else {
-//                            holder.binding.lastMsg.setText("Tap to chat");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {}
-//                });
-//
-//        holder.binding.username.setText(user.getName());
-//
-//        Glide.with(context).load(user.getProfileImage())
-//                .placeholder(R.drawable.avatar)
-//                .into(holder.binding.profile);
-//
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context, ChatActivity.class);
-//                intent.putExtra("name", user.getName());
-//                intent.putExtra("image", user.getProfileImage());
-//                intent.putExtra("uid", user.getUid());
-//                intent.putExtra("token", user.getToken());
-//                context.startActivity(intent);
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return originListUser.size();
-//    }
-//
-//    public class UsersViewHolder extends RecyclerView.ViewHolder {
-//
-//        ChatItemLayoutBinding binding;
-//        public UsersViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            binding = ChatItemLayoutBinding.bind(itemView);
-//        }
-//    }
-//}

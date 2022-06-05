@@ -62,14 +62,12 @@ public class ChatActivity extends AppCompatActivity {
     MessagesAdapter adapter;
     ArrayList<Message> messages;
 
-//    String senderRoom, receiverRoom;
-
     FirebaseDatabase database;
     FirebaseStorage storage;
 
     ProgressDialog dialog;
     String senderUid, receiverUid;
-    User currentUser = new User();
+    User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +85,7 @@ public class ChatActivity extends AppCompatActivity {
         dialog.setCancelable(false);
 
         messages = new ArrayList<>();
+        currentUser = new User();
 
         String name = getIntent().getStringExtra("name");
         String profile = getIntent().getStringExtra("image");

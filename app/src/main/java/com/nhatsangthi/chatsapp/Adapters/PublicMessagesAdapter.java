@@ -28,7 +28,7 @@ import com.nhatsangthi.chatsapp.databinding.ItemSentGroupBinding;
 
 import java.util.ArrayList;
 
-public class GroupMessagesAdapter extends RecyclerView.Adapter {
+public class PublicMessagesAdapter extends RecyclerView.Adapter {
 
     Context context;
     ArrayList<Message> messages;
@@ -36,7 +36,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter {
     final int ITEM_SENT = 1;
     final int ITEM_RECEIVE = 2;
 
-    public GroupMessagesAdapter(Context context, ArrayList<Message> messages) {
+    public PublicMessagesAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
         this.messages = messages;
     }
@@ -112,24 +112,6 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter {
                         .placeholder(R.drawable.placeholder)
                         .into(viewHolder.binding.image);
             }
-
-            FirebaseDatabase.getInstance().getReference()
-                    .child("users")
-                    .child(message.getSenderId())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                User user = snapshot.getValue(User.class);
-                                viewHolder.binding.name.setText("@" + user.getName());
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
 
             viewHolder.binding.message.setText(message.getMessage());
 

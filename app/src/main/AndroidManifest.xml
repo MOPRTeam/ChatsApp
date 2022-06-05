@@ -20,6 +20,17 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
         <activity
+            android:name=".Activities.GroupInfoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ChatsApp.NoActionBar" />
+        <activity
+            android:name=".Activities.GroupChatActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ChatsApp.NoActionBar" />
+        <activity
+            android:name=".Activities.PublicChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.CreateGroupActivity"
             android:exported="false" />
         <activity
@@ -42,9 +53,6 @@
             android:exported="false" />
         <activity
             android:name=".Activities.PersonalChatDetail"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.GroupChatActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.ChatActivity"
