@@ -45,21 +45,22 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
         User user = userList.get(position);
 
         holder.binding.txtMemberName.setText(user.getName());
-        if (currentGroup.getAdminId().equals(user.getUid())) {
-            holder.binding.status.setVisibility(View.VISIBLE);
-            holder.binding.btnRemove.setVisibility(View.GONE);
+        if (!currentGroup.getAdminId().equals(user.getUid())) {
+            holder.binding.status.setVisibility(View.GONE);
+            if (currentGroup.getAdminId().equals(FirebaseAuth.getInstance().getUid())) {
+                holder.binding.btnRemove.setVisibility(View.VISIBLE);
+            }
         }
 
-        if (currentGroup.getAdminId().equals(FirebaseAuth.getInstance().getUid())) {
-            holder.binding.btnRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FirebaseDatabase.getInstance().getReference("groupDetails")
-                            .child(currentGroup.getId()).child("members").child(user.getUid())
-                            .removeValue();
-                }
-            });
-        }
+
+        holder.binding.btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase.getInstance().getReference("groupDetails")
+                        .child(currentGroup.getId()).child("members").child(user.getUid())
+                        .removeValue();
+            }
+        });
 
         Glide.with(context).load(user.getProfileImage())
                 .placeholder(R.drawable.avatar)

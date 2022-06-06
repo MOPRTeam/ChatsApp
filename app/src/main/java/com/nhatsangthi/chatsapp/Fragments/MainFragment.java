@@ -38,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nhatsangthi.chatsapp.Activities.FriendActivity;
+import com.nhatsangthi.chatsapp.Activities.PublicChatActivity;
 import com.nhatsangthi.chatsapp.Adapters.TopStatusAdapter;
 import com.nhatsangthi.chatsapp.Adapters.ChatListAdapter;
 import com.nhatsangthi.chatsapp.Constants.AllConstants;
@@ -295,12 +296,8 @@ public class MainFragment extends Fragment {
                 intent.putExtra("CurrentUser", currentUser);
                 startActivity(intent);
                 break;
-            case R.id.logout:
-//                FirebaseAuth.getInstance().signOut();
-//                finish();
-//                startActivity(new Intent(this, PhoneNumberActivity.class));
-                break;
-            case R.id.settings:
+            case R.id.publicChat:
+                startActivity(new Intent(getActivity(), PublicChatActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

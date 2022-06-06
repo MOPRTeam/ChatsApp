@@ -8,12 +8,6 @@
         android:title="AddFriend"
         app:showAsAction="always" />
     <item
-        android:id="@+id/group"
-        android:title="Groups" />
-    <item
-        android:id="@+id/logout"
-        android:title="Logout" />
-    <item
-        android:id="@+id/settings"
-        android:title="Settings" />
+        android:id="@+id/publicChat"
+        android:title="Public Chat" />
 </menu>

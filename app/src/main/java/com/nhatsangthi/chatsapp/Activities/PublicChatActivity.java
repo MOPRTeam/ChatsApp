@@ -50,7 +50,7 @@ public class PublicChatActivity extends AppCompatActivity {
         binding = ActivityPublicChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getSupportActionBar().setTitle("Group Chat");
+        getSupportActionBar().setTitle("Public Chat");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         senderUid = FirebaseAuth.getInstance().getUid();

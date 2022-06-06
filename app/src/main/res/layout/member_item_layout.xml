@@ -37,12 +37,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:text="Group Admin"
         android:textColor="@color/colorPrimary"
         android:textSize="15dp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnRemove"
@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="10dp"
+        android:visibility="gone"
         android:text="Remove" />
 
 </RelativeLayout>

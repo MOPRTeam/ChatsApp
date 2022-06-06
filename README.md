@@ -28,6 +28,7 @@ các bạn chưa được config vào Firebase Project của tụi mình nên Fi
 - OTP View: https://github.com/mukeshsolanki/android-otpview-pinview
 - Glide Image Processing: https://github.com/bumptech/glide
 - Circular Image View: https://github.com/hdodenhof/CircleImageView
+- Story View: https://github.com/OMARIHAMZA/StoryView
 - Reactions View: https://github.com/pgreze/android-reactions
 - Circular Status View: https://github.com/3llomi/CircularStatusView
 - Shimmer RecyclerView: https://github.com/sharish/ShimmerRecyclerView

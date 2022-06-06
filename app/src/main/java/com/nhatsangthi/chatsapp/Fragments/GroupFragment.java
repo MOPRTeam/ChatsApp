@@ -33,6 +33,8 @@ import com.nhatsangthi.chatsapp.Utils.Util;
 import com.nhatsangthi.chatsapp.databinding.FragmentGroupBinding;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -149,6 +151,9 @@ public class GroupFragment extends Fragment {
                         }
                     }
 
+                    Collections.sort(groupList, (a, b) ->
+                            b.getGroupLastMessage().getLastMsgTime().compareTo(a.getGroupLastMessage().getLastMsgTime()));
+
                     groupChatListAdapter.notifyDataSetChanged();
                     binding.groupChatRecyclerView.hideShimmerAdapter();
                     binding.groupChatRecyclerView.scheduleLayoutAnimation();
@@ -160,9 +165,7 @@ public class GroupFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
 
     }

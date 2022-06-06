@@ -50,10 +50,9 @@ public class GroupChatListAdapter extends RecyclerView.Adapter<GroupChatListAdap
 
         String lastMsg = group.getGroupLastMessage().getLastMsg();
         long time = group.getGroupLastMessage().getLastMsgTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
 
-        holder.binding.lastMsg.setText(Util.mySubString(lastMsg, 0, 30));
-        holder.binding.msgTime.setText(dateFormat.format(new Date(time)));
+        holder.binding.lastMsg.setText(Util.mySubString(lastMsg, 0, 25));
+        holder.binding.msgTime.setText(Util.getTimeAgo(time));
 
         holder.binding.username.setText(group.getName());
         Glide.with(context).load(group.getImage())

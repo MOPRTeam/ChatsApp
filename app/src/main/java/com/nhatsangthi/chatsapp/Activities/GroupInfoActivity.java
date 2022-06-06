@@ -6,12 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -69,38 +73,51 @@ public class GroupInfoActivity extends AppCompatActivity {
         }
         binding.collapsingToolbar.setTitle(currentGroup.getName());
 
-        userList = new ArrayList<>();
-        for (GroupMember member : currentGroup.getMembers()) {
-            database.getReference().child("users").child(member.getId())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            User user = snapshot.getValue(User.class);
-
-                            userList.add(user);
-                            memberAdapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-            memberAdapter.notifyDataSetChanged();
-        }
-
         memberAdapter = new GroupMemberAdapter(GroupInfoActivity.this, currentGroup, userList);
 
         binding.memberRecyclerView.setLayoutManager(new LinearLayoutManager(GroupInfoActivity.this));
         binding.memberRecyclerView.setNestedScrollingEnabled(false);
         binding.memberRecyclerView.setAdapter(memberAdapter);
-        memberAdapter.notifyDataSetChanged();
 
-        if (currentGroup.getAdminId().equals(FirebaseAuth.getInstance().getUid())) {
-            binding.cardDeleteGroup.setVisibility(View.VISIBLE);
-        } else {
-            binding.cardDeleteGroup.setVisibility(View.GONE);
-        }
+        userList = new ArrayList<>();
+        database.getReference("groupDetails").child(currentGroup.getId()).child("members")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<GroupMember> groupMembers = new ArrayList<>();
+                        for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
+                            groupMembers.add(snapshotTemp.getValue(GroupMember.class));
+                        }
+                        currentGroup.setMembers(groupMembers);
+
+                        userList.clear();
+                        for (GroupMember member : currentGroup.getMembers()) {
+                            database.getReference().child("users").child(member.getId())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            User user = snapshot.getValue(User.class);
+
+                                            userList.add(user);
+                                            memberAdapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {}
+                                    });
+
+                            memberAdapter.setUserList(userList);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 }

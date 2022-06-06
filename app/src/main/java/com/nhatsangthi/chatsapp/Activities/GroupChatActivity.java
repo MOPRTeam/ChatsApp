@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import com.nhatsangthi.chatsapp.Adapters.GroupMessageAdapter;
 import com.nhatsangthi.chatsapp.Adapters.PublicMessagesAdapter;
 import com.nhatsangthi.chatsapp.Models.Group;
 import com.nhatsangthi.chatsapp.Models.GroupLastMessage;
+import com.nhatsangthi.chatsapp.Models.GroupMember;
 import com.nhatsangthi.chatsapp.Models.GroupMessage;
 import com.nhatsangthi.chatsapp.Models.Message;
 import com.nhatsangthi.chatsapp.Models.User;
@@ -37,6 +39,8 @@ import com.nhatsangthi.chatsapp.databinding.ActivityGroupChatBinding;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class GroupChatActivity extends AppCompatActivity {
 
