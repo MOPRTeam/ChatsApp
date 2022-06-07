@@ -5,6 +5,7 @@
 	- Hoàng Trung Nhật. MSSV: 19110253
 	- Phan Thanh Sang. MSSV: 19110276
 	- Quách Đinh Trường Thi. MSSV: 19110294
+- Ứng dụng trên Google Play Store: https://play.google.com/store/apps/details?id=com.nhatsangthi.chatsapp
 
 ## Hướng dẫn cài đặt 
 ### Yêu cầu
