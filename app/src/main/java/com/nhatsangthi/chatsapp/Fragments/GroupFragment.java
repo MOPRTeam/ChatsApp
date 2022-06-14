@@ -87,24 +87,6 @@ public class GroupFragment extends Fragment {
         binding.groupChatRecyclerView.setAdapter(groupChatListAdapter);
         binding.groupChatRecyclerView.showShimmerAdapter();
 
-//        database.getReference().child("groupDetails").orderByChild("lastMsgTime")
-//                .addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        groupList.clear();
-//                        for (DataSnapshot snapshotTemp : snapshot.getChildren()) {
-//                            groupList.add(snapshotTemp.getValue(Group.class));
-//                        }
-//
-//                        Collections.reverse(groupList);
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
-
         getGroupList();
 
         return binding.getRoot();
